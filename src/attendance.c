@@ -164,8 +164,8 @@ void temperatureMonitoring()
 
 	while (1)
 	{
-		lcdClear();
 		uint16_t temperature = getTemp();
+		// sprintf(temp_buff, "Temp:       ");
 		sprintf(temp_buff, "Temp: %d C", temperature);
 		lcdStringXY(1, 0, temp_buff);
 
@@ -190,6 +190,27 @@ void temperatureMonitoring()
 
 void retrieveStudentData()
 {
+	lcdClear();
+	lcdStringXY(1, 0, "Retrieving Data...");
+	_delay_ms(700);
+
+	uint16_t address = STUDENT_START_ADDRESS;
+	char studentCode[STUDENT_CODE_SIZE];
+	uint16_t studentCount = loadStudentNumber();
+
+	uint16_t i;
+	for (i = 0; i < studentCount; i++)
+	{
+		eepromReadString(address, studentCode);
+		uartSendString(studentCode);
+		uartSendString("\r\n");
+		address += STUDENT_CODE_SIZE;
+	}
+
+	lcdClear();
+	lcdStringXY(1, 0, "Data Retrieved");
+	_delay_ms(700);
+	lcdClear();
 }
 
 void trafficMonitoring()
@@ -199,14 +220,17 @@ void trafficMonitoring()
 	sprintf(dist_buff, "Dist: %d cm", 0);
 	lcdStringXY(1, 0, dist_buff);
 	char presents_buff[BUFFER_SIZE];
-	sprintf(presents_buff, "Presents: %d Press * to exit", 0);
+	sprintf(presents_buff, "Press * to exit");
 	lcdStringXY(2, 0, presents_buff);
-	char key = 0;
+	_delay_ms(1000);
 
+	lcdClear();
+	char key = 0;
 	while (1)
 	{
-		lcdClear();
 		int dist = getDistance();
+
+		// sprintf(dist_buff, "Dist:         ");
 		sprintf(dist_buff, "Dist: %d cm", dist);
 		lcdStringXY(1, 0, dist_buff);
 		if (dist < 6)
@@ -214,7 +238,8 @@ void trafficMonitoring()
 			presentStudents++;
 		}
 		char presents_buff[16];
-		sprintf(presents_buff, "Presents: %d Press * to exit", presentStudents);
+		// sprintf(presents_buff, "Presents:       ");
+		sprintf(presents_buff, "Presents: %d", presentStudents);
 		lcdStringXY(2, 0, presents_buff);
 
 		key = keypadScan();
