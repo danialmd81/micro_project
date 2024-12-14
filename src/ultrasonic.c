@@ -51,7 +51,7 @@ uint32_t GetPulseWidth()
 	if (result > 60000)
 		return US_NO_OBSTACLE;
 	else
-		return (result >> 1); // Return the measured pulse width in microseconds
+		return (result ); // Return the measured pulse width in microseconds
 }
 
 int getDistance()

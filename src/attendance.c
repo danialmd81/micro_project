@@ -1,5 +1,7 @@
 #include "attendance.h"
 
+int presentStudents = 0; // Store the number of present students at any po
+
 uint16_t eepromAddress = 0x00;
 
 void submitStudentCode()
@@ -180,4 +182,43 @@ void retrieveStudentData()
 
 void trafficMonitoring()
 {
+	lcdClear();
+	char dist_buff[16];
+	sprintf(dist_buff, "Dist: %d cm", 0);
+	lcdStringXY(1, 0, dist_buff);
+	char presents_buff[16];
+	sprintf(presents_buff, "Presents: %d", 0);
+	lcdStringXY(2, 0, presents_buff);
+	char exit_key[] = "Press * to exit";
+	lcdStringXY(2, 14, exit_key);
+	char key = 0;
+
+	while(1){
+		int dist = getDistance();
+		sprintf(dist_buff, "Dist: %d cm", dist);
+		lcdStringXY(1, 0, dist_buff);
+		if(dist < 6){
+			presentStudents++;
+		}
+		char presents_buff[16];
+		sprintf(presents_buff, "Presents: %d", presentStudents);
+		lcdStringXY(2, 0, presents_buff);
+		
+		key = keypadScan();
+		if (key != 0)
+		{
+			_delay_ms(20); // Debounce delay
+			if (keypadScan() == key)
+			{
+
+				// Verify key press
+				while (keypadScan() == key)
+					;
+				if(key == '*' )
+					return ;
+			}
+		}
+		_delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
+	}
+
 }
