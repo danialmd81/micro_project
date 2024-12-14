@@ -111,11 +111,20 @@ void displayMainMenu()
 	}
 }
 
-int main()
+void init()
 {
 	lcdInit();
 	keypadInit();
 	buzzerInit();
+	tempInit();
+	ultrasonicInit();
+	uartInit();
+}
+
+int main()
+{
+	init();
+	
 	displayMainMenu();
 
 	while (1)
@@ -128,6 +137,7 @@ int main()
 			break;
 		case '1':
 			attendanceInitialization();
+			displayMainMenu();
 			break;
 		case '2':
 			studentManagement();
