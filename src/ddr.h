@@ -21,6 +21,10 @@
 // Array defined in another source file so used extern here
 extern unsigned char keypad[4][4];
 
+//
+#define STUDENT_NUMBER_ADDRESS 50
+#define STUDENT_START_ADDRESS 100
+
 // Temperature ADC (PA0)
 #define TEMP_DDR DDRA
 #define TEMP_PORT PORTA

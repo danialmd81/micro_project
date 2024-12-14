@@ -117,10 +117,10 @@ int main()
 {
 	init();
 	int startOption = 1;
-	displayMainMenu(startOption);
 
 	while (1)
 	{
+		displayMainMenu(startOption);
 		char key = keypadGetkey();
 		switch (key)
 		{
@@ -130,31 +130,24 @@ int main()
 			{
 				startOption = 1;
 			}
-			displayMainMenu(startOption);
 			break;
 		case '1':
 			attendanceInitialization();
-			displayMainMenu(startOption);
 			break;
 		case '2':
 			studentManagement();
-			displayMainMenu(startOption);
 			break;
 		case '3':
 			viewPresentStudents();
-			displayMainMenu(startOption);
 			break;
 		case '4':
 			temperatureMonitoring();
-			displayMainMenu(startOption);
 			break;
 		case '5':
 			retrieveStudentData();
-			displayMainMenu(startOption);
 			break;
 		case '6':
 			trafficMonitoring();
-			displayMainMenu(startOption);
 			break;
 		default:
 			buzzerOn();

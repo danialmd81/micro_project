@@ -43,7 +43,7 @@ void submitStudentCode()
 	{
 		// Save the student code to EEPROM
 		eepromWriteString(eepromAddress, studentCode);
-		eepromAddress++;
+		eepromAddress += sizeof(studentCode);
 		lcdStringXY(2, 0, "Code Accepted");
 	}
 
@@ -100,7 +100,7 @@ void searchStudent()
 		}
 	}
 	int i;
-	for (i = 0; i < eepromAddress; i++)
+	for (i = 0; i < eepromAddress; i += sizeof(studentCode))
 	{
 		eepromReadString(i, storedCode);
 		// Compare the entered code with the stored code
@@ -139,6 +139,42 @@ void studentManagement()
 
 void viewPresentStudents()
 {
+	lcdClear();
+	char buffer[16];
+	char studentCode[10];
+	int presentCount = 0;
+
+	// Count the number of present students
+	int i;
+	for (i = 0; i < eepromAddress; i += sizeof(studentCode))
+	{
+		eepromReadString(i, studentCode);
+		if (studentCode[0] != '\0') // Check if the student code is not empty
+		{
+			presentCount++;
+		}
+	}
+
+	// Display the number of present students
+	sprintf(buffer, "Present: %d", presentCount);
+	lcdStringXY(1, 0, buffer);
+	_delay_ms(700);
+
+	// Display the student codes one by one
+	for (i = 0; i < eepromAddress; i += sizeof(studentCode))
+	{
+		// eepromReadString(address, studentCode);
+		if (studentCode[0] != '\0') // Check if the student code is not empty
+		{
+			lcdClear();
+			lcdStringXY(1, 0, studentCode);
+			_delay_ms(2000); // Display each student code for 2 seconds
+		}
+		// address += sizeof(studentCode);
+	}
+
+	// Return to the main menu after displaying all student codes
+	displayMainMenu();
 }
 
 void temperatureMonitoring()
