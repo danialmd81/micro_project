@@ -4,7 +4,7 @@ BAUD = 9600
 
 CC = avr-gcc
 OBJCOPY = avr-objcopy
-CFLAGS = -mmcu=$(MCU) -DF_CPU=$(F_CPU) -O
+CFLAGS = -Wall -gdwarf-2 -fsigned-char -MD -MP -mmcu=$(MCU) -DF_CPU=$(F_CPU) -O1
 		 
 TARGET = main
 
@@ -21,12 +21,13 @@ $(TARGET).elf: $(OBJS)
 	$(CC) $(CFLAGS) -o $@ $^
 
 $(TARGET).hex: $(TARGET).elf
-	$(OBJCOPY) -O ihex $< $@
+	$(OBJCOPY) -O ihex -R .eeprom $< $@
+	$(OBJCOPY) -j .eeprom --set-section-flags=.eeprom="alloc,load" --change-section-lma .eeprom=0 --no-change-warnings -O ihex $< $(TARGET).eep || exit 0
 
 clean_intermediate:
-	rm -f src/*.o
+	rm -f src/*.o src/*.d 
 
 clean:
-	rm -f src/*.o *.elf $(TARGET).hex
+	rm -f *.elf *.eep $(TARGET).hex
 
 .PHONY: all clean clean_intermediate

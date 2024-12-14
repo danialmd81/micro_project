@@ -1,6 +1,7 @@
 #include "attendance.h"
 #include "buzzer.h"
 #include "ddr.h"
+#include "eeprom.h"
 #include "keypad.h"
 #include "lcd.h"
 #include "ultrasonic.h"
@@ -71,8 +72,6 @@ void testVirtualTerminal()
 
 	while (1)
 	{
-		unsigned char x = 'a';
-
 		uartSendString("Hello from UART\r\n");
 		_delay_ms(500);
 	}
@@ -115,6 +114,7 @@ void init()
 
 int main()
 {
+	// eepromReset();
 	init();
 	int startOption = 1;
 
