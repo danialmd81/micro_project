@@ -8,6 +8,7 @@
 //
 #include <avr/interrupt.h>
 // header to enable data flow control over pins
+#include <avr/eeprom.h>
 #include <avr/io.h>
 #include <avr/iom32.h>
 #include <avr/sleep.h>
@@ -16,14 +17,20 @@
 
 #include <inttypes.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-
 // Array defined in another source file so used extern here
 extern unsigned char keypad[4][4];
 
 //
-#define STUDENT_NUMBER_ADDRESS 50
-#define STUDENT_START_ADDRESS 100
+#define BUFFER_SIZE 44
+
+//
+#define EEPROM_SIZE 0x3ff
+#define STUDENT_NUMBER_ADDRESS 0x0000
+#define STUDENT_START_ADDRESS 0x0010
+#define STUDENT_CODE_SIZE 9
+#define STUDENT_MAX_NUMBER 150
 
 // Temperature ADC (PA0)
 #define TEMP_DDR DDRA
