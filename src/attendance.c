@@ -1,4 +1,6 @@
 #include "attendance.h"
+#include <avr/interrupt.h>
+#include <avr/io.h>
 
 void submitStudentCode()
 {
@@ -76,16 +78,36 @@ void viewPresentStudents()
 {
 }
 
-void temperatureMonitoring()
-{
+void temperatureMonitoring() {
 	lcdClear();
-	char buffer[16];
-	while (1)
-	{
+	char temp_buff[16];
+	sprintf(temp_buff, "Temp: %d C", 0);
+	lcdStringXY(1, 0, temp_buff);
+	char exit_key[] = "Press * to exit";
+	lcdStringXY(2, 0, exit_key);
+	char key = 0;
+
+	while (1) {
 		uint16_t temperature = getTemp();
-		sprintf(buffer, "Temp: %d C", temperature);
-		lcdStringXY(1, 0, buffer);
-		_delay_ms(50);
+		sprintf(temp_buff, "Temp: %d C", temperature);
+		lcdStringXY(1, 0, temp_buff);
+
+		key = keypadScan();
+		if (key != 0)
+		{
+			_delay_ms(20); // Debounce delay
+			if (keypadScan() == key)
+			{
+
+				// Verify key press
+				while (keypadScan() == key)
+					;
+				if(key == '*' )
+					return ;
+			}
+		}
+		
+		_delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
 	}
 }
 
