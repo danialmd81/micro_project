@@ -7,7 +7,7 @@
 
 #
 *.pdsbak
-New Project.pdsprj.CROCODILE.behda.workspace
+*.pdsprj.*
 Project Backups/*
 
 #
