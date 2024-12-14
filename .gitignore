@@ -5,8 +5,12 @@
 # Ignore Visual Studio Code workspace files
 *.code-workspace
 
+#
 *.pdsbak
 New Project.pdsprj.CROCODILE.behda.workspace
+Project Backups/*
+
+#
 main.elf
 main.hex
-Project Backups/New Project \[Autosaved].pdsprj
+main.eep
