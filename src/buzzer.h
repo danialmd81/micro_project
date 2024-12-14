@@ -7,4 +7,4 @@ void buzzerInit();
 void buzzerOn();
 void buzzerOff();
 
-#endif BUZZER_H
+#endif // BUZZER_H

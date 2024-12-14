@@ -51,7 +51,21 @@ void attendanceInitialization()
 {
 	lcdClear();
 	lcdStringXY(1, 0, "Attendance Ready");
-	// Add your attendance initialization code here
+	_delay_ms(700);
+	lcdStringXY(1, 0, "1 . Sub Stud Code");
+	lcdStringXY(2, 0, "2 . Exit");
+	while (1)
+	{
+		char key = keypadGetkey();
+		switch (key)
+		{
+		case '1':
+			submitStudentCode();
+			break;
+		case '2':
+			return;
+		}
+	}
 }
 
 void studentManagement()
@@ -64,6 +78,15 @@ void viewPresentStudents()
 
 void temperatureMonitoring()
 {
+	lcdClear();
+	char buffer[16];
+	while (1)
+	{
+		uint16_t temperature = getTemp();
+		sprintf(buffer, "Temp: %d C", temperature);
+		lcdStringXY(1, 0, buffer);
+		_delay_ms(50);
+	}
 }
 
 void retrieveStudentData()
