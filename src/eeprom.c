@@ -9,8 +9,9 @@ void eepromWriteString(uint16_t address, const char* data)
 	eeprom_write_byte((uint8_t*)address, '\0'); // Null-terminate the string
 }
 
-void eepromReadString(uint16_t address, char* buffer, uint16_t length)
+void eepromReadString(uint16_t address, char* buffer)
 {
+	uint16_t length = 9;
 	while (length--)
 	{
 		*buffer = eeprom_read_byte((const uint8_t*)address++);
