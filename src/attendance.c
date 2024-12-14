@@ -1,22 +1,25 @@
 #include "attendance.h"
 
+uint16_t eepromAddress = 0x00;
+
 void submitStudentCode()
 {
 	lcdClear();
 	lcdStringXY(1, 0, "Enter Student Code:");
-	char studentCode[10];
+	char studentCode[10]; // 40130023
 	int index = 0;
+
 	char key;
 
 	while (1)
 	{
 		key = keypadGetkey();
-		if (key == '#') // Assuming '#' is used to submit the code
+		if (key == '=') // Assuming '#' is used to submit the code
 		{
 			studentCode[index] = '\0';
 			break;
 		}
-		else if (key == '*') // Assuming '*' is used to clear the input
+		else if (key == ' ') // Assuming '*' is used to clear the input
 		{
 			index = 0;
 			lcdStringXY(2, 0, "                "); // Clear the input line
@@ -39,20 +42,20 @@ void submitStudentCode()
 	else
 	{
 		// Save the student code to EEPROM
-		// eepromWriteString(studentCode);
+		eepromWriteString(eepromAddress, studentCode);
+		eepromAddress++;
 		lcdStringXY(2, 0, "Code Accepted");
 	}
 
-	_delay_ms(1000);
+	_delay_ms(700);
 	attendanceInitialization(); // Return to attendance ready state
 }
 
 void attendanceInitialization()
 {
 	lcdClear();
-	lcdStringXY(1, 0, "Attendance Ready");
-	_delay_ms(700);
-	lcdStringXY(1, 0, "1 . Sub Stud Code");
+
+	lcdStringXY(1, 0, "1 . Submit Student Code");
 	lcdStringXY(2, 0, "2 . Exit");
 	while (1)
 	{
@@ -68,8 +71,70 @@ void attendanceInitialization()
 	}
 }
 
+void searchStudent()
+{
+	lcdClear();
+	lcdStringXY(1, 0, "Enter Student Code:");
+	char studentCode[10];
+	char storedCode[10];
+	int index = 0;
+	char key;
+
+	while (1)
+	{
+		key = keypadGetkey();
+		if (key == '=') // Assuming '=' is used to submit the code
+		{
+			studentCode[index] = '\0';
+			break;
+		}
+		else if (key == ' ') // Assuming ' ' is used to clear the input
+		{
+			index = 0;
+			lcdStringXY(2, 0, "                "); // Clear the input line
+		}
+		else
+		{
+			studentCode[index++] = key;
+			lcdChar(key);
+		}
+	}
+	int i;
+	for (i = 0; i < eepromAddress; i++)
+	{
+		eepromReadString(i, storedCode);
+		// Compare the entered code with the stored code
+		if (strcmp(studentCode, storedCode) == 0)
+		{
+			lcdStringXY(2, 0, "Student Present");
+			_delay_ms(700);
+			return studentManagement(); // Return to student management menu
+		}
+	}
+	lcdStringXY(2, 0, "Student Absent");
+	_delay_ms(700);
+	return studentManagement(); // Return to student management menu
+}
+
 void studentManagement()
 {
+	lcdClear();
+	lcdStringXY(1, 0, "1. Search Students");
+	lcdStringXY(2, 0, "2. Exit");
+
+	char key;
+	while (1)
+	{
+		key = keypadGetkey();
+		switch (key)
+		{
+		case '1':
+			searchStudent();
+			break;
+		case '2':
+			return;
+		}
+	}
 }
 
 void viewPresentStudents()

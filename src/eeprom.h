@@ -8,6 +8,6 @@
 void eepromWriteString(uint16_t address, const char* data);
 
 // Function to read a string from EEPROM
-void eepromReadString(uint16_t address, char* buffer, uint16_t length);
+void eepromReadString(uint16_t address, char* buffer);
 
 #endif // EEPROM_H

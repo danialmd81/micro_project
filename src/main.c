@@ -78,36 +78,28 @@ void testVirtualTerminal()
 	}
 }
 
-void displayMainMenu()
+void displayMainMenu(int startOption)
 {
-	static int startOption = 1;
 	lcdClear();
 
 	switch (startOption)
 	{
 	case 1:
-		lcdStringXY(1, 0, "1. Attendan Init");
-		lcdStringXY(2, 0, "2. Student Mang");
+		lcdStringXY(1, 0, "1. Attendance Initialization");
+		lcdStringXY(2, 0, "2. Student Management");
 		break;
 	case 2:
-		lcdStringXY(1, 0, "3. Present Stud");
-		lcdStringXY(2, 0, "4. Temperat Mont");
+		lcdStringXY(1, 0, "3. View Present Students");
+		lcdStringXY(2, 0, "4. Temperature Monitoring");
 		break;
 	case 3:
-		lcdStringXY(1, 0, "5. Student Data");
-		lcdStringXY(2, 0, "6. Traffic Mont");
+		lcdStringXY(1, 0, "5. Retrieve Student Data");
+		lcdStringXY(2, 0, "6. Traffic Monitoring");
 		break;
 	default:
-		startOption = 1;
-		lcdStringXY(1, 0, "1. Attendan Init");
-		lcdStringXY(2, 0, "2. Student Mang");
+		lcdStringXY(1, 0, "1. Attendance Initialization");
+		lcdStringXY(2, 0, "2. Student Management");
 		break;
-	}
-
-	startOption++;
-	if (startOption > 3)
-	{
-		startOption = 1;
 	}
 }
 
@@ -124,8 +116,8 @@ void init()
 int main()
 {
 	init();
-	
-	displayMainMenu();
+	int startOption = 1;
+	displayMainMenu(startOption);
 
 	while (1)
 	{
@@ -133,26 +125,36 @@ int main()
 		switch (key)
 		{
 		case '0':
-			displayMainMenu();
+			startOption++;
+			if (startOption > 3)
+			{
+				startOption = 1;
+			}
+			displayMainMenu(startOption);
 			break;
 		case '1':
 			attendanceInitialization();
-			displayMainMenu();
+			displayMainMenu(startOption);
 			break;
 		case '2':
 			studentManagement();
+			displayMainMenu(startOption);
 			break;
 		case '3':
 			viewPresentStudents();
+			displayMainMenu(startOption);
 			break;
 		case '4':
 			temperatureMonitoring();
+			displayMainMenu(startOption);
 			break;
 		case '5':
 			retrieveStudentData();
+			displayMainMenu(startOption);
 			break;
 		case '6':
 			trafficMonitoring();
+			displayMainMenu(startOption);
 			break;
 		default:
 			buzzerOn();
