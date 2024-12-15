@@ -114,7 +114,7 @@ void init()
 
 int main()
 {
-	// eepromReset();
+	//eepromReset();
 	init();
 	int startOption = 1;
 
