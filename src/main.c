@@ -59,8 +59,8 @@ void testTemperature()
 	char buffer[16];
 	while (1)
 	{
-		uint16_t temperature = getTemp();
-		sprintf(buffer, "Temp: %d C", temperature);
+		float temperature = getTemp();
+		sprintf(buffer, "Temp: %3.2f C", temperature);
 		lcdStringXY(1, 0, buffer);
 		_delay_ms(50);
 	}

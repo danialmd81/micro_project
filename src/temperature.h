@@ -2,7 +2,8 @@
 #define TEMPERATURE_H
 #include "ddr.h"
 
+//extern uint16_t lastTempReading;
 void tempInit();
-uint16_t getTemp();
+int getTemp();
 
 #endif // TEMPERATURE_H
