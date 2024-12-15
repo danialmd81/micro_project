@@ -42,8 +42,19 @@ void submitStudentCode()
 	else
 	{
 		// Save the student code to EEPROM
-		saveStudent(studentCode);
-		lcdStringXY(2, 0, "Code Accepted");
+		// char buffer[16];
+		// sprintf(buffer, "student %d", searchStudent(studentCode));
+		// lcdStringXY(2, 0, buffer);
+		if(searchStudent(studentCode)!=-1){
+			lcdStringXY(2, 0, "Code Already Exists");
+			buzzerOn();
+			_delay_ms(500);
+			buzzerOff();			
+		}
+		else{
+			saveStudent(studentCode);
+			lcdStringXY(2, 0, "Code Accepted");
+		}
 	}
 
 	_delay_ms(700);
@@ -108,7 +119,7 @@ void studentManagement()
 					lcdChar(key);
 				}
 			}
-			if (searchStudent(studentCode))
+			if (searchStudent(studentCode)!=-1)
 			{
 				lcdStringXY(2, 0, "Student Present");
 				_delay_ms(700);
@@ -216,14 +227,7 @@ void trafficMonitoring()
 {
 	lcdClear();
 	char dist_buff[16];
-	sprintf(dist_buff, "Dist: %d cm", 0);
-	lcdStringXY(1, 0, dist_buff);
-	char presents_buff[BUFFER_SIZE];
-	sprintf(presents_buff, "Press * to exit");
-	lcdStringXY(2, 0, presents_buff);
-	_delay_ms(1000);
-
-	lcdClear();
+	char presents_buff[32];
 	char key = 0;
 	while (1)
 	{
@@ -236,9 +240,7 @@ void trafficMonitoring()
 		{
 			presentStudents++;
 		}
-		char presents_buff[16];
-		// sprintf(presents_buff, "Presents:       ");
-		sprintf(presents_buff, "Presents: %d", presentStudents);
+		sprintf(presents_buff, "Presents: %d  Press * to exit", presentStudents);
 		lcdStringXY(2, 0, presents_buff);
 
 		key = keypadScan();
@@ -256,5 +258,7 @@ void trafficMonitoring()
 			}
 		}
 		_delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
+		lcdClear();
 	}
+
 }
