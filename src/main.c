@@ -95,6 +95,10 @@ void displayMainMenu(int startOption)
 		lcdStringXY(1, 0, "5. Retrieve Student Data");
 		lcdStringXY(2, 0, "6. Traffic Monitoring");
 		break;
+	case 4:
+		lcdStringXY(1, 0, "7. Remove Student");
+		
+		break;
 	default:
 		lcdStringXY(1, 0, "1. Attendance Initialization");
 		lcdStringXY(2, 0, "2. Student Management");
@@ -126,7 +130,7 @@ int main()
 		{
 		case '0':
 			startOption++;
-			if (startOption > 3)
+			if (startOption > 4)
 			{
 				startOption = 1;
 			}
@@ -148,6 +152,9 @@ int main()
 			break;
 		case '6':
 			trafficMonitoring();
+			break;
+		case '7':
+			removeStudent();
 			break;
 		default:
 			buzzerOn();

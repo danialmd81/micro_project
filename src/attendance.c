@@ -67,9 +67,10 @@ void attendanceInitialization()
 
 	lcdStringXY(1, 0, "1 . Submit Student Code");
 	lcdStringXY(2, 0, "2 . Exit");
+	char key;
 	while (1)
 	{
-		char key = keypadGetkey();
+		key = keypadGetkey();
 		switch (key)
 		{
 		case '1':
@@ -261,4 +262,62 @@ void trafficMonitoring()
 		lcdClear();
 	}
 
+}
+void removeStudent()
+{
+	lcdClear();
+	lcdStringXY(1, 0, "Enter Student Code:");
+	char studentCode[STUDENT_CODE_SIZE]; // 40130023
+	int index = 0;
+
+	char key;
+
+	while (1)
+	{
+		key = keypadGetkey();
+		if (key == '=') // Assuming '#' is used to submit the code
+		{
+			studentCode[index] = '\0';
+			break;
+		}
+		else if (key == ' ') // Assuming '*' is used to clear the input
+		{
+			index = 0;
+			lcdStringXY(2, 0, "                "); // Clear the input line
+		}
+		else
+		{
+			studentCode[index++] = key;
+			lcdChar(key);
+		}
+	}
+
+	// Validate the student code
+	if (index != 8) // Assuming student code length should be 8
+	{
+		lcdStringXY(2, 0, "Invalid Code");
+		buzzerOn();
+		_delay_ms(500);
+		buzzerOff();
+	}
+	else
+	{
+		// Save the student code to EEPROM
+		// char buffer[16];
+		// sprintf(buffer, "student %d", searchStudent(studentCode));
+		// lcdStringXY(2, 0, buffer);
+		if(searchStudent(studentCode)==-1){
+			lcdStringXY(2, 0, "Code Not Found");
+			buzzerOn();
+			_delay_ms(500);
+			buzzerOff();			
+		}
+		else{
+			removeStudentCode(studentCode);
+			lcdStringXY(2, 0, "Code Removed");
+		}
+	}
+
+	_delay_ms(700);
+	return ; // Return to attendance ready state
 }

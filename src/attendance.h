@@ -17,5 +17,6 @@ void viewPresentStudents();
 void temperatureMonitoring();
 void retrieveStudentData();
 void trafficMonitoring();
+void removeStudent();
 
 #endif // ATTENDANCE_H
