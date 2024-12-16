@@ -19,4 +19,5 @@ void saveStudentNumber(uint16_t number);
 uint16_t loadStudentNumber();
 void saveStudent(char stuedentCode[10]);
 uint16_t searchStudent(char* studentCode);
+void removeStudentCode(char* studentCode);
 #endif // EEPROM_H

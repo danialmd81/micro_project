@@ -2,11 +2,12 @@
 
 void eepromReset()
 {
-	uint16_t address;
-	for (address = 0; address < EEPROM_SIZE; address++)
+	uint16_t i;
+	for (i = 0; i <= EEPROM_SIZE; i++)
 	{
-		eeprom_write_byte((uint8_t*)address, 0xFF); // Typically, EEPROM reset sets all bytes to 0xFF
+		eeprom_write_byte((uint8_t*)i, 0xFF);
 	}
+	saveStudentNumber(0);
 }
 
 // Function to write a string to EEPROM
@@ -83,4 +84,25 @@ uint16_t searchStudent(char* studentCode)
 	}
 
 	return (uint16_t)-1;
+}
+
+void removeStudentCode(char* studentCode)
+{
+	uint16_t address = searchStudent(studentCode);
+	if (address != (uint16_t)-1)
+	{
+		uint16_t studentCount = loadStudentNumber();
+		uint16_t i;
+		for (i = address; i < (STUDENT_START_ADDRESS + (studentCount - 1) * STUDENT_CODE_SIZE); i += STUDENT_CODE_SIZE)
+		{
+			char buffer[STUDENT_CODE_SIZE];
+			eepromReadString(i + STUDENT_CODE_SIZE, buffer);
+			eepromWriteString(i, buffer);
+		}
+		uint16_t j;
+		for(j=0;j<STUDENT_CODE_SIZE;j++){
+			eeprom_write_byte((uint8_t*)(STUDENT_START_ADDRESS + (studentCount - 1) * STUDENT_CODE_SIZE + j), 0xFF);	
+			}
+		saveStudentNumber(studentCount - 1);
+	}
 }
