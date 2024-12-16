@@ -39,17 +39,24 @@ void glcdInit() /* GLCD initialize function */
 
 void glcdClearAll() /* GLCD all display clear function */
 {
-	int i, j;
-	/* Select both left & right half of display */
-	Command_Port |= (1 << CS1) | (1 << CS2);
+	int i;
 	for (i = 0; i < TotalPage; i++)
 	{
-		glcdCommand((0xB8) + i); /* Increment page each time after 64 column */
-		for (j = 0; j < 64; j++)
-		{
-			glcdData(0); /* Write zeros to all 64 column */
-		}
+		glcdString(i, "                          "); /* Print 26 spaces in each page */
 	}
+
+	// int i, j;
+	// /* Select both left & right half of display */
+	// Command_Port |= (1 << CS1) | (1 << CS2);
+	// for (i = 0; i < TotalPage; i++)
+	// {
+	// 	glcdCommand((0xB8) + i); /* Increment page each time after 64 column */
+	// 	glcdCommand(0x40); /* Set Y address (column=0) */
+	// 	for (j = 0; j < 128; j++)
+	// 	{
+	// 		glcdData(0); /* Write zeros to all 128 columns */
+	// 	}
+	// }
 	glcdCommand(0x40); /* Set Y address (column=0) */
 	glcdCommand(0xB8); /* Set x address (page=0) */
 }
@@ -61,8 +68,8 @@ void glcdString(char page_no, char* str) /* GLCD string write function */
 	unsigned int Y_address = 0;
 	float Page_inc = 0.5;
 
-	Command_Port &= ~(1 << CS1);
-	Command_Port |= (1 << CS2); /* Select first Left half of display */
+	Command_Port &= ~(1 << CS1); /* Select first Left half of display */
+	Command_Port |= (1 << CS2);
 
 	glcdCommand(Page);
 	for (i = 0; str[i] != 0; i++) /* Print each char in string till null */

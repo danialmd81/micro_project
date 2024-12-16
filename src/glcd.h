@@ -17,6 +17,7 @@
 #define CS2 PA4
 #define RST PA5
 
+#define MaxWidth 23
 #define TotalPage 8
 
 void glcdCommand(char Command); /* GLCD command function */

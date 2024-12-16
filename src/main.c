@@ -84,38 +84,22 @@ void testGLCD()
 	glcdString(0, "Atmel");
 }
 
-void displayMainMenu(int startOption)
+void displayMainMenu()
 {
-	lcdClear();
+	glcdClearAll();
 
-	switch (startOption)
-	{
-	case 1:
-		lcdStringXY(1, 0, "1. Attendance Initialization");
-		lcdStringXY(2, 0, "2. Student Management");
-		break;
-	case 2:
-		lcdStringXY(1, 0, "3. View Present Students");
-		lcdStringXY(2, 0, "4. Temperature Monitoring");
-		break;
-	case 3:
-		lcdStringXY(1, 0, "5. Retrieve Student Data");
-		lcdStringXY(2, 0, "6. Traffic Monitoring");
-		break;
-	case 4:
-		lcdStringXY(1, 0, "7. Remove Student");
-
-		break;
-	default:
-		lcdStringXY(1, 0, "1. Attendance Initialization");
-		lcdStringXY(2, 0, "2. Student Management");
-		break;
-	}
+	glcdString(0, "1.Attendance System");
+	glcdString(1, "2.Student Management");
+	glcdString(2, "3.Present Students");
+	glcdString(3, "4.Temperature");
+	glcdString(4, "5.Student Data");
+	glcdString(5, "6.Traffic Monitoring");
+	glcdString(6, "7.Remove Student");
 }
 
 void init()
 {
-	lcdInit();
+	glcdInit();
 	keypadInit();
 	buzzerInit();
 	tempInit();
@@ -127,57 +111,49 @@ int main()
 {
 	// eepromReset();
 
-	// init();
-	// int startOption = 1;
+	init();
 
-	// while (1)
-	// {
-	// 	displayMainMenu(startOption);
-	// 	char key = keypadGetkey();
-	// 	switch (key)
-	// 	{
-	// 	case '0':
-	// 		startOption++;
-	// 		if (startOption > 4)
-	// 		{
-	// 			startOption = 1;
-	// 		}
-	// 		break;
-	// 	case '1':
-	// 		attendanceInitialization();
-	// 		break;
-	// 	case '2':
-	// 		studentManagement();
-	// 		break;
-	// 	case '3':
-	// 		viewPresentStudents();
-	// 		break;
-	// 	case '4':
-	// 		temperatureMonitoring();
-	// 		break;
-	// 	case '5':
-	// 		retrieveStudentData();
-	// 		break;
-	// 	case '6':
-	// 		trafficMonitoring();
-	// 		break;
-	// 	case '7':
-	// 		removeStudent();
-	// 		break;
-	// 	default:
-	// 		buzzerOn();
-	// 		_delay_ms(200);
-	// 		buzzerOff();
-	// 		break;
-	// 	}
-	// }
+	while (1)
+	{
+		displayMainMenu();
+		char key = keypadGetkey();
+		switch (key)
+		{
+		case '1':
+			attendanceInitialization();
+			break;
+		case '2':
+			studentManagement();
+			break;
+		case '3':
+			viewPresentStudents();
+			break;
+		case '4':
+			temperatureMonitoring();
+			break;
+		case '5':
+			retrieveStudentData();
+			break;
+		case '6':
+			trafficMonitoring();
+			break;
+		case '7':
+			removeStudent();
+			break;
+		default:
+			buzzerOn();
+			_delay_ms(200);
+			buzzerOff();
+			break;
+		}
+	}
 
 	// Uncomment one of the following lines to test a specific component
 	// testUltrasonic();
 	// testKeypad();
 	// testTemperature();
 	// testVirtualTerminal();
-	testGLCD();
+	// testGLCD();
 
 	return 0;
 }

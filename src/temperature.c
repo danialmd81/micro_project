@@ -7,7 +7,7 @@ float ADC_Scale_Factor = 5.0 / 1024.0;
 
 void tempInit(void)
 {
-	// Set PA0 (ADC0) and PA1 (ADC1) as input
+	// Set PA6 (ADC6) and PA7 (ADC7) as input
 	TEMP_DDR &= ~(1 << TEMP_PIN);
 	TEMP_DDR &= ~(1 << (TEMP_PIN + 1));
 
@@ -33,14 +33,14 @@ uint16_t ADC_Read(uint8_t channel)
 		;
 
 	// Read ADC value
-	return ADC;
+	return ADCW;
 }
 
 int getTemp(void)
 {
 	// Read ADC values for Vout and Vgnd
-	uint16_t ADC_Vout_Sample = ADC_Read(0);
-	uint16_t ADC_Vgnd_Sample = ADC_Read(1);
+	uint16_t ADC_Vout_Sample = ADC_Read(6);
+	uint16_t ADC_Vgnd_Sample = ADC_Read(7);
 
 	// Convert ADC values to voltages
 	float ADC_Vout_Voltage = ADC_Vout_Sample * ADC_Scale_Factor;

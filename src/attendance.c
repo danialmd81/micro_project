@@ -4,9 +4,10 @@ int presentStudents = 0; // Store the number of present students at any po
 
 void submitStudentCode()
 {
-	lcdClear();
-	lcdStringXY(1, 0, "Enter Student Code:");
+	glcdClearAll();
+	glcdString(0, "Enter Student Code:");
 	char studentCode[STUDENT_CODE_SIZE]; // 40130023
+	memset(studentCode, 0, STUDENT_CODE_SIZE);
 	int index = 0;
 
 	char key;
@@ -19,35 +20,31 @@ void submitStudentCode()
 			studentCode[index] = '\0';
 			break;
 		}
-		else if (key == ' ') // Assuming '*' is used to clear the input
+		else if (key == '*') // Assuming '*' is used to clear the input
 		{
 			index = 0;
-			lcdStringXY(2, 0, "                "); // Clear the input line
+			glcdString(1, "                "); // Clear the input line
 		}
 		else
 		{
 			studentCode[index++] = key;
-			lcdChar(key);
+			glcdString(1, studentCode);
 		}
 	}
 
 	// Validate the student code
 	if (index != 8) // Assuming student code length should be 8
 	{
-		lcdStringXY(2, 0, "Invalid Code");
+		glcdString(1, "Invalid Code");
 		buzzerOn();
 		_delay_ms(500);
 		buzzerOff();
 	}
 	else
 	{
-		// Save the student code to EEPROM
-		// char buffer[16];
-		// sprintf(buffer, "student %d", searchStudent(studentCode));
-		// lcdStringXY(2, 0, buffer);
 		if (searchStudent(studentCode) != -1)
 		{
-			lcdStringXY(2, 0, "Code Already Exists");
+			glcdString(1, "Code Already Exists");
 			buzzerOn();
 			_delay_ms(500);
 			buzzerOff();
@@ -55,7 +52,7 @@ void submitStudentCode()
 		else
 		{
 			saveStudent(studentCode);
-			lcdStringXY(2, 0, "Code Accepted");
+			glcdString(1, "Code Accepted");
 		}
 	}
 
@@ -65,10 +62,10 @@ void submitStudentCode()
 
 void attendanceInitialization()
 {
-	lcdClear();
+	glcdClearAll();
 
-	lcdStringXY(1, 0, "1 . Submit Student Code");
-	lcdStringXY(2, 0, "2 . Exit");
+	glcdString(0, "1.Submit Student Code");
+	glcdString(1, "2.Exit");
 	char key;
 	while (1)
 	{
@@ -86,9 +83,9 @@ void attendanceInitialization()
 
 void studentManagement()
 {
-	lcdClear();
-	lcdStringXY(1, 0, "1. Search Students");
-	lcdStringXY(2, 0, "2. Exit");
+	glcdClearAll();
+	glcdString(0, "1.Search Students");
+	glcdString(1, "2.Exit");
 
 	char key;
 	while (1)
@@ -97,9 +94,10 @@ void studentManagement()
 		switch (key)
 		{
 		case '1':
-			lcdClear();
-			lcdStringXY(1, 0, "Enter Student Code:");
+			glcdClearAll();
+			glcdString(0, "Enter Student Code:");
 			char studentCode[STUDENT_CODE_SIZE];
+			memset(studentCode, 0, STUDENT_CODE_SIZE);
 			int index = 0;
 			char key;
 
@@ -111,25 +109,25 @@ void studentManagement()
 					studentCode[index] = '\0';
 					break;
 				}
-				else if (key == ' ') // Assuming ' ' is used to clear the input
+				else if (key == '*') // Assuming '*' is used to clear the input
 				{
 					index = 0;
-					lcdStringXY(2, 0, "                "); // Clear the input line
+					glcdString(1, "                "); // Clear the input line
 				}
 				else
 				{
 					studentCode[index++] = key;
-					lcdChar(key);
+					glcdString(1, studentCode);
 				}
 			}
 			if (searchStudent(studentCode) != -1)
 			{
-				lcdStringXY(2, 0, "Student Present");
+				glcdString(1, "Student Present");
 				_delay_ms(700);
 			}
 			else
 			{
-				lcdStringXY(2, 0, "Student Absent");
+				glcdString(1, "Student Absent");
 				_delay_ms(700);
 			}
 			return studentManagement();
@@ -142,7 +140,7 @@ void studentManagement()
 
 void viewPresentStudents()
 {
-	lcdClear();
+	glcdClearAll();
 	uint16_t address = STUDENT_START_ADDRESS;
 	char buffer[BUFFER_SIZE];
 	char studentCode[STUDENT_CODE_SIZE];
@@ -150,14 +148,14 @@ void viewPresentStudents()
 
 	// Display the number of present students
 	sprintf(buffer, "Present: %d", presentCount);
-	lcdStringXY(1, 0, buffer);
+	glcdString(0, buffer);
 
-	// Display the student codes one by one
+	// Display the student codes
 	uint16_t i;
 	for (i = 0; i < presentCount; i++)
 	{
 		eepromReadString(address, studentCode);
-		lcdStringXY(2, 0, studentCode);
+		glcdString(i % 7 + 1, studentCode);
 		_delay_ms(1000);
 		address += STUDENT_CODE_SIZE;
 	}
@@ -168,18 +166,18 @@ void viewPresentStudents()
 
 void temperatureMonitoring()
 {
-	lcdClear();
-	char temp_buff[32];
+	glcdClearAll();
+	char temp_buff[24];
 	char key = 0;
+	int temperature;
+	glcdString(1, "Press * to exit");
 
 	while (1)
 	{
-		int temperature = getTemp();
+		temperature = getTemp();
 		sprintf(temp_buff, "Temp: %d C", temperature);
-		lcdStringXY(1, 0, temp_buff);
-
-		char exit_key[] = "Press * to exit";
-		lcdStringXY(2, 0, exit_key);
+		glcdString(0, temp_buff);
+		_delay_ms(20);
 
 		key = keypadScan();
 		if (key != 0)
@@ -196,15 +194,17 @@ void temperatureMonitoring()
 			}
 		}
 
-		_delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
-		lcdClear();
+		_delay_ms(200); // Add a small delay to prevent continuous reading of the same key press
+		memset(temp_buff, 32, 23);
+		temp_buff[23] = '\0';
+		glcdString(0, temp_buff);
 	}
 }
 
 void retrieveStudentData()
 {
-	lcdClear();
-	lcdStringXY(1, 0, "Retrieving Data...");
+	glcdClearAll();
+	glcdString(0, "Retrieving Data...");
 	_delay_ms(700);
 
 	uint16_t address = STUDENT_START_ADDRESS;
@@ -220,31 +220,33 @@ void retrieveStudentData()
 		address += STUDENT_CODE_SIZE;
 	}
 
-	lcdClear();
-	lcdStringXY(1, 0, "Data Retrieved");
+	glcdClearAll();
+	glcdString(0, "Data Retrieved");
 	_delay_ms(700);
-	lcdClear();
+	glcdClearAll();
 }
 
 void trafficMonitoring()
 {
-	lcdClear();
+	glcdClearAll();
+	glcdString(2, "Press * to exit");
 	char dist_buff[16];
-	char presents_buff[32];
+	char presents_buff[23];
 	char key = 0;
+	int dist;
+
 	while (1)
 	{
-		int dist = getDistance();
+		dist = getDistance();
 
-		// sprintf(dist_buff, "Dist:         ");
 		sprintf(dist_buff, "Dist: %d cm", dist);
-		lcdStringXY(1, 0, dist_buff);
+		glcdString(0, dist_buff);
 		if (dist < 6)
 		{
 			presentStudents++;
 		}
-		sprintf(presents_buff, "Presents: %d  Press * to exit", presentStudents);
-		lcdStringXY(2, 0, presents_buff);
+		sprintf(presents_buff, "Presents: %d  ", presentStudents);
+		glcdString(1, presents_buff);
 
 		key = keypadScan();
 		if (key != 0)
@@ -260,15 +262,23 @@ void trafficMonitoring()
 					return;
 			}
 		}
-		_delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
-		lcdClear();
+		_delay_ms(200); // Add a small delay to prevent continuous reading of the same key press
+
+		memset(dist_buff, 32, 15);
+		dist_buff[15] = '\0';
+		glcdString(0, dist_buff);
+		memset(presents_buff, 32, 22);
+		presents_buff[23] = '\0';
+		glcdString(1, presents_buff);
 	}
 }
+
 void removeStudent()
 {
-	lcdClear();
-	lcdStringXY(1, 0, "Enter Student Code:");
+	glcdClearAll();
+	glcdString(0, "Enter Student Code:");
 	char studentCode[STUDENT_CODE_SIZE]; // 40130023
+	memset(studentCode, 0, STUDENT_CODE_SIZE);
 	int index = 0;
 
 	char key;
@@ -281,22 +291,22 @@ void removeStudent()
 			studentCode[index] = '\0';
 			break;
 		}
-		else if (key == ' ') // Assuming '*' is used to clear the input
+		else if (key == '*') // Assuming '*' is used to clear the input
 		{
 			index = 0;
-			lcdStringXY(2, 0, "                "); // Clear the input line
+			glcdString(1, "                "); // Clear the input line
 		}
 		else
 		{
 			studentCode[index++] = key;
-			lcdChar(key);
+			glcdString(1, studentCode);
 		}
 	}
 
 	// Validate the student code
 	if (index != 8) // Assuming student code length should be 8
 	{
-		lcdStringXY(2, 0, "Invalid Code");
+		glcdString(2, "Invalid Code");
 		buzzerOn();
 		_delay_ms(500);
 		buzzerOff();
@@ -306,10 +316,10 @@ void removeStudent()
 		// Save the student code to EEPROM
 		// char buffer[16];
 		// sprintf(buffer, "student %d", searchStudent(studentCode));
-		// lcdStringXY(2, 0, buffer);
+		// glcdString(2, 0, buffer);
 		if (searchStudent(studentCode) == -1)
 		{
-			lcdStringXY(2, 0, "Code Not Found");
+			glcdString(2, "Code Not Found");
 			buzzerOn();
 			_delay_ms(500);
 			buzzerOff();
@@ -317,7 +327,7 @@ void removeStudent()
 		else
 		{
 			removeStudentCode(studentCode);
-			lcdStringXY(2, 0, "Code Removed");
+			glcdString(2, "Code Removed");
 		}
 	}
 
