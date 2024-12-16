@@ -24,7 +24,7 @@ void uartSendString(char* str)
 	}
 }
 
-char uartReceiveChar()
+char uartReceive()
 {
 	while (!(UCSRA & (1 << RXC)))
 		;

@@ -4,6 +4,7 @@
 #include "glcd.h"
 #include "keypad.h"
 #include "lcd.h"
+#include "rfid.h"
 #include "ultrasonic.h"
 #include "virtualTerminal.h"
 
@@ -68,7 +69,7 @@ void testTemperature()
 
 void testVirtualTerminal()
 {
-	uartInit(BAUD_PRESCALER);
+	uartInit();
 
 	while (1)
 	{
@@ -82,6 +83,77 @@ void testGLCD()
 	glcdInit(); /* Initialize GLCD */
 	glcdClearAll(); /* Clear all GLCD display */
 	glcdString(0, "Atmel");
+}
+
+void testRFID()
+{
+	unsigned char value[13];
+	unsigned char value1[13] = "123456789012"; // Predefined ID for master
+	unsigned char value2[13] = "987654321098"; // Predefined ID for student
+	int i = 0, j = 0, k = 0;
+
+	uartInit(); // Initialize UART with baud rate 9600
+	glcdInit(); // Initialize GLCD
+	glcdClearAll(); // Clear all GLCD display
+
+	while (1)
+	{
+		// Read input from virtual terminal
+		value[i] = uartReceive();
+		uartSendChar(value[i]);
+		_delay_ms(1);
+
+		if (value[i] == '\n')
+		{
+			memset(value, 0, sizeof(value));
+			i = -1;
+		}
+		i++;
+
+		if (i == 12)
+		{
+			value[i] = '\0';
+			for (j = 0; value1[j] != '\0'; j++)
+			{
+				if (value[j] == value1[j])
+					k++;
+			}
+			if (k == 12) // Match with the predefined ID
+			{
+				glcdClearAll();
+				glcdString(0, "Access Granted");
+				glcdString(1, "Master");
+				_delay_ms(1000);
+				glcdClearAll();
+			}
+			else
+			{
+				k = 0;
+				for (j = 0; value2[j] != '\0'; j++)
+				{
+					if (value[j] == value2[j])
+						k++;
+				}
+				if (k == 12)
+				{
+					glcdClearAll();
+					glcdString(0, "Access Granted");
+					glcdString(1, "Student");
+					_delay_ms(1000);
+					glcdClearAll();
+				}
+				else
+				{
+					glcdClearAll();
+					glcdString(0, "Access Denied");
+					_delay_ms(1000);
+					glcdClearAll();
+				}
+			}
+			i = 0;
+			k = 0;
+		}
+	}
 }
 
 void displayMainMenu()
@@ -154,6 +226,7 @@ int main()
 	// testTemperature();
 	// testVirtualTerminal();
 	// testGLCD();
+	// testRFID();
 
 	return 0;
 }

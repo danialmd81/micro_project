@@ -14,6 +14,6 @@
 void uartInit();
 void uartSendChar(char data);
 void uartSendString(char* str);
-char uartReceiveChar();
+char uartReceive();
 
 #endif // VIRTUALTERMINAL_H
