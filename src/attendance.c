@@ -45,13 +45,15 @@ void submitStudentCode()
 		// char buffer[16];
 		// sprintf(buffer, "student %d", searchStudent(studentCode));
 		// lcdStringXY(2, 0, buffer);
-		if(searchStudent(studentCode)!=-1){
+		if (searchStudent(studentCode) != -1)
+		{
 			lcdStringXY(2, 0, "Code Already Exists");
 			buzzerOn();
 			_delay_ms(500);
-			buzzerOff();			
+			buzzerOff();
 		}
-		else{
+		else
+		{
 			saveStudent(studentCode);
 			lcdStringXY(2, 0, "Code Accepted");
 		}
@@ -120,7 +122,7 @@ void studentManagement()
 					lcdChar(key);
 				}
 			}
-			if (searchStudent(studentCode)!=-1)
+			if (searchStudent(studentCode) != -1)
 			{
 				lcdStringXY(2, 0, "Student Present");
 				_delay_ms(700);
@@ -166,37 +168,37 @@ void viewPresentStudents()
 
 void temperatureMonitoring()
 {
-    lcdClear();
-    char temp_buff[32];
-    char key = 0;
+	lcdClear();
+	char temp_buff[32];
+	char key = 0;
 
-    while (1)
-    {
-        int temperature = getTemp();
-        sprintf(temp_buff, "Temp: %d C", temperature);
-        lcdStringXY(1, 0, temp_buff);
+	while (1)
+	{
+		int temperature = getTemp();
+		sprintf(temp_buff, "Temp: %d C", temperature);
+		lcdStringXY(1, 0, temp_buff);
 
-        char exit_key[] = "Press * to exit";
-        lcdStringXY(2, 0, exit_key);
-        
-        key = keypadScan();
-        if (key != 0)
-        {
-            _delay_ms(20); // Debounce delay
-            if (keypadScan() == key)
-            {
+		char exit_key[] = "Press * to exit";
+		lcdStringXY(2, 0, exit_key);
 
-                // Verify key press
-                while (keypadScan() == key)
-                    ;
-                if (key == '*')
-                    return;
-            }
-        }
+		key = keypadScan();
+		if (key != 0)
+		{
+			_delay_ms(20); // Debounce delay
+			if (keypadScan() == key)
+			{
 
-        _delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
-        lcdClear();
-    }
+				// Verify key press
+				while (keypadScan() == key)
+					;
+				if (key == '*')
+					return;
+			}
+		}
+
+		_delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
+		lcdClear();
+	}
 }
 
 void retrieveStudentData()
@@ -261,7 +263,6 @@ void trafficMonitoring()
 		_delay_ms(50); // Add a small delay to prevent continuous reading of the same key press
 		lcdClear();
 	}
-
 }
 void removeStudent()
 {
@@ -306,18 +307,20 @@ void removeStudent()
 		// char buffer[16];
 		// sprintf(buffer, "student %d", searchStudent(studentCode));
 		// lcdStringXY(2, 0, buffer);
-		if(searchStudent(studentCode)==-1){
+		if (searchStudent(studentCode) == -1)
+		{
 			lcdStringXY(2, 0, "Code Not Found");
 			buzzerOn();
 			_delay_ms(500);
-			buzzerOff();			
+			buzzerOff();
 		}
-		else{
+		else
+		{
 			removeStudentCode(studentCode);
 			lcdStringXY(2, 0, "Code Removed");
 		}
 	}
 
 	_delay_ms(700);
-	return ; // Return to attendance ready state
+	return; // Return to attendance ready state
 }

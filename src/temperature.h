@@ -2,7 +2,13 @@
 #define TEMPERATURE_H
 #include "ddr.h"
 
-//extern uint16_t lastTempReading;
+// Temperature ADC (PA6)
+#define TEMP_DDR DDRA
+#define TEMP_PORT PORTA
+#define TEMP_PIN PA6
+// #define TEMP_PIN PA7
+
+// extern uint16_t lastTempReading;
 void tempInit();
 int getTemp();
 

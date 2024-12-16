@@ -19,54 +19,5 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-// Array defined in another source file so used extern here
-extern unsigned char keypad[4][4];
-
-//
-#define BUFFER_SIZE 44
-
-//
-#define EEPROM_SIZE 0x3ff
-#define STUDENT_NUMBER_ADDRESS 0x0000
-#define STUDENT_START_ADDRESS 0x0010
-#define STUDENT_CODE_SIZE 9
-#define STUDENT_MAX_NUMBER 150
-
-// Temperature ADC (PA0)
-#define TEMP_DDR DDRA
-#define TEMP_PORT PORTA
-#define TEMP_PIN PA0
-
-// LCD Pins (B)
-#define LCD_DDR DDRB
-#define LCD_PORT PORTB
-#define LCD_RS 0
-#define LCD_EN 1
-
-// Keypad Pins (C)
-#define KEYPAD_DDR DDRC
-#define KEYPAD_PORT PORTC
-#define KEYPAD_PIN PINC
-
-// UART Pins (D0-D1)
-#define UART_DDR DDRD
-#define UART_TX PD1
-#define UART_RX PD0
-
-// Ultrasonic Pins (D2-D3)
-#define US_TRIG_DDR DDRD
-#define US_ECHO_DDR DDRD
-#define US_TRIG_PORT PORTD
-#define US_ECHO_PORT PIND
-#define US_TRIG_PIN PD2
-#define US_ECHO_PIN PD3
-#define CALIBRATION_FACTOR 58.0 // 58 us/cm
-#define US_ERROR -1 // Error indicator
-#define US_NO_OBSTACLE -2 // No obstacle indicator
-
-// Buzzer Pins (D4)
-#define BUZZER_PIN PD4
-#define BUZZER_DDR DDRD
-#define BUZZER_PORT PORTD
 
 #endif // DDR_H

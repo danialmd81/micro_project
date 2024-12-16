@@ -100,9 +100,10 @@ void removeStudentCode(char* studentCode)
 			eepromWriteString(i, buffer);
 		}
 		uint16_t j;
-		for(j=0;j<STUDENT_CODE_SIZE;j++){
-			eeprom_write_byte((uint8_t*)(STUDENT_START_ADDRESS + (studentCount - 1) * STUDENT_CODE_SIZE + j), 0xFF);	
-			}
+		for (j = 0; j < STUDENT_CODE_SIZE; j++)
+		{
+			eeprom_write_byte((uint8_t*)(STUDENT_START_ADDRESS + (studentCount - 1) * STUDENT_CODE_SIZE + j), 0xFF);
+		}
 		saveStudentNumber(studentCount - 1);
 	}
 }

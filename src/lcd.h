@@ -3,6 +3,12 @@
 
 #include "ddr.h"
 
+// LCD Pins (B)
+#define LCD_DDR DDRB
+#define LCD_PORT PORTB
+#define LCD_RS 0
+#define LCD_EN 1
+
 void lcdCommand(unsigned char cmnd);
 void lcdInit();
 void lcdChar(unsigned char data);

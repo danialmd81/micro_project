@@ -60,7 +60,7 @@ void testTemperature()
 	while (1)
 	{
 		float temperature = getTemp();
-		sprintf(buffer, "Temp: %3.2f C", temperature);
+		sprintf(buffer, "Temp: %3.2f C", (double)temperature);
 		lcdStringXY(1, 0, buffer);
 		_delay_ms(50);
 	}
@@ -97,7 +97,7 @@ void displayMainMenu(int startOption)
 		break;
 	case 4:
 		lcdStringXY(1, 0, "7. Remove Student");
-		
+
 		break;
 	default:
 		lcdStringXY(1, 0, "1. Attendance Initialization");
@@ -118,7 +118,7 @@ void init()
 
 int main()
 {
-	//eepromReset();
+	// eepromReset();
 	init();
 	int startOption = 1;
 
