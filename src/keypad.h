@@ -1,7 +1,9 @@
+#include <avr/io.h>
+#include <avr/iom32.h>
+#include <util/delay.h>
+
 #ifndef KEYPAD_H
 #define KEYPAD_H
-
-#include "ddr.h"
 
 // Array defined in another source file so used extern here
 extern unsigned char keypad[4][4];

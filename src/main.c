@@ -1,7 +1,7 @@
 #include "attendance.h"
 #include "buzzer.h"
-#include "ddr.h"
 #include "eeprom.h"
+#include "glcd.h"
 #include "keypad.h"
 #include "lcd.h"
 #include "ultrasonic.h"
@@ -77,6 +77,13 @@ void testVirtualTerminal()
 	}
 }
 
+void testGLCD()
+{
+	glcdInit(); /* Initialize GLCD */
+	glcdClearAll(); /* Clear all GLCD display */
+	glcdString(0, "Atmel");
+}
+
 void displayMainMenu(int startOption)
 {
 	lcdClear();
@@ -119,56 +126,58 @@ void init()
 int main()
 {
 	// eepromReset();
-	init();
-	int startOption = 1;
 
-	while (1)
-	{
-		displayMainMenu(startOption);
-		char key = keypadGetkey();
-		switch (key)
-		{
-		case '0':
-			startOption++;
-			if (startOption > 4)
-			{
-				startOption = 1;
-			}
-			break;
-		case '1':
-			attendanceInitialization();
-			break;
-		case '2':
-			studentManagement();
-			break;
-		case '3':
-			viewPresentStudents();
-			break;
-		case '4':
-			temperatureMonitoring();
-			break;
-		case '5':
-			retrieveStudentData();
-			break;
-		case '6':
-			trafficMonitoring();
-			break;
-		case '7':
-			removeStudent();
-			break;
-		default:
-			buzzerOn();
-			_delay_ms(200);
-			buzzerOff();
-			break;
-		}
-	}
+	// init();
+	// int startOption = 1;
+
+	// while (1)
+	// {
+	// 	displayMainMenu(startOption);
+	// 	char key = keypadGetkey();
+	// 	switch (key)
+	// 	{
+	// 	case '0':
+	// 		startOption++;
+	// 		if (startOption > 4)
+	// 		{
+	// 			startOption = 1;
+	// 		}
+	// 		break;
+	// 	case '1':
+	// 		attendanceInitialization();
+	// 		break;
+	// 	case '2':
+	// 		studentManagement();
+	// 		break;
+	// 	case '3':
+	// 		viewPresentStudents();
+	// 		break;
+	// 	case '4':
+	// 		temperatureMonitoring();
+	// 		break;
+	// 	case '5':
+	// 		retrieveStudentData();
+	// 		break;
+	// 	case '6':
+	// 		trafficMonitoring();
+	// 		break;
+	// 	case '7':
+	// 		removeStudent();
+	// 		break;
+	// 	default:
+	// 		buzzerOn();
+	// 		_delay_ms(200);
+	// 		buzzerOff();
+	// 		break;
+	// 	}
+	// }
 
 	// Uncomment one of the following lines to test a specific component
 	// testUltrasonic();
 	// testKeypad();
 	// testTemperature();
 	// testVirtualTerminal();
+	testGLCD();
 
 	return 0;
 }

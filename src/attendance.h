@@ -1,9 +1,11 @@
 #ifndef ATTENDANCE_H
 #define ATTENDANCE_H
 
+#include <stdio.h>
+#include <stdlib.h>
+
 #include "attendance.h"
 #include "buzzer.h"
-#include "ddr.h"
 #include "eeprom.h"
 #include "keypad.h"
 #include "lcd.h"

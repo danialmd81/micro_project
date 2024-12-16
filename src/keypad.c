@@ -1,4 +1,3 @@
-// In keypad.c
 #include "keypad.h"
 
 unsigned char col, row;

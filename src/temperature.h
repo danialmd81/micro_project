@@ -1,6 +1,7 @@
 #ifndef TEMPERATURE_H
 #define TEMPERATURE_H
-#include "ddr.h"
+
+#include "common.h"
 
 // Temperature ADC (PA6)
 #define TEMP_DDR DDRA

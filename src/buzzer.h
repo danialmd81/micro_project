@@ -1,7 +1,9 @@
+#include <avr/io.h>
+#include <avr/iom32.h>
+
 #ifndef BUZZER_H
 #define BUZZER_H
 
-#include "ddr.h"
 // Buzzer Pins (D4)
 #define BUZZER_PIN PD4
 #define BUZZER_DDR DDRD

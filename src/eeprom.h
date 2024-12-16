@@ -1,7 +1,16 @@
+#include <avr/eeprom.h>
+#include <avr/io.h>
+#include <avr/iom32.h>
+#include <util/delay.h>
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
 #ifndef EEPROM_H
 #define EEPROM_H
 
-#include "ddr.h"
+#include "common.h"
 
 //
 #define BUFFER_SIZE 44

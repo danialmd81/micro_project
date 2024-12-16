@@ -28,6 +28,7 @@ clean_intermediate:
 	rm -f src/*.o src/*.d 
 
 clean:
-	rm -f *.elf *.eep $(TARGET).hex
+	rm -f *.elf *.eep $(TARGET).hex 
+	rm -f src/*.o src/*.d 
 
 .PHONY: all clean clean_intermediate

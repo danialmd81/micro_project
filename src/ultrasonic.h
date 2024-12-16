@@ -1,7 +1,9 @@
 #ifndef ULTRASONIC_H
 #define ULTRASONIC_H
 
-#include "ddr.h"
+#include <avr/io.h>
+#include <avr/iom32.h>
+#include <util/delay.h>
 
 // Ultrasonic Pins (D2-D3)
 #define US_TRIG_DDR DDRD

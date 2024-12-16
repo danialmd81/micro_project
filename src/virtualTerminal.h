@@ -1,7 +1,10 @@
+#include "common.h"
+#include <avr/io.h>
+#include <avr/iom32.h>
+#include <util/delay.h>
+
 #ifndef VIRTUALTERMINAL_H
 #define VIRTUALTERMINAL_H
-
-#include "ddr.h"
 
 // UART Pins (D0-D1)
 #define UART_DDR DDRD

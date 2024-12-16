@@ -1,7 +1,9 @@
 #ifndef LCD_H
 #define LCD_H
 
-#include "ddr.h"
+#include <avr/io.h>
+#include <avr/iom32.h>
+#include <util/delay.h>
 
 // LCD Pins (B)
 #define LCD_DDR DDRB
