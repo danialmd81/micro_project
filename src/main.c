@@ -3,15 +3,14 @@
 #include "eeprom.h"
 #include "glcd.h"
 #include "keypad.h"
-#include "lcd.h"
 #include "rfid.h"
 #include "ultrasonic.h"
 #include "virtualTerminal.h"
 
 /*
-atmega32 setting
+atmega64 setting
 {CKSEL=0}
-{CLOCK=16MHz}
+{CLOCK=8MHz}
 
 buzzer setting
 {VNOM=5V}
@@ -34,9 +33,9 @@ void testUltrasonic()
 		int distance = getDistance();
 		char buffer[16];
 		sprintf(buffer, "Dist: %d cm", distance);
-		lcdStringXY(1, 0, buffer);
+		glcdString(0, buffer);
 		_delay_ms(1000);
-		lcdClear();
+		glcdClearAll();
 	}
 }
 
@@ -47,40 +46,43 @@ void testKeypad()
 	while (1)
 	{
 		char key = keypadGetkey();
-		lcdChar(key);
+		char str[2];
+		str[0] = key;
+		str[1] = '\0';
+		glcdString(0, str);
 		_delay_ms(50);
-		lcdClear();
+		glcdClearAll();
 	}
 }
 
 void testTemperature()
 {
+	glcdInit();
 	tempInit();
 
 	char buffer[16];
 	while (1)
 	{
-		float temperature = getTemp();
-		sprintf(buffer, "Temp: %3.2f C", (double)temperature);
-		lcdStringXY(1, 0, buffer);
+		int temperature = getTemp();
+		sprintf(buffer, "Temp: %d C", temperature);
+		glcdString(0, buffer);
 		_delay_ms(50);
 	}
 }
 
 void testVirtualTerminal()
 {
-	uartInit();
+	virTerminalInit();
 
 	while (1)
 	{
-		uartSendString("Hello from UART\r\n");
+		virTerminalSendString("Hello from UART\r\n");
 		_delay_ms(500);
 	}
 }
 
 void testGLCD()
 {
-	glcdInit(); /* Initialize GLCD */
 	glcdClearAll(); /* Clear all GLCD display */
 	glcdString(0, "Atmel");
 }
@@ -92,18 +94,16 @@ void testRFID()
 	unsigned char value2[13] = "987654321098"; // Predefined ID for student
 	int i = 0, j = 0, k = 0;
 
-	uartInit(); // Initialize UART with baud rate 9600
-	glcdInit(); // Initialize GLCD
 	glcdClearAll(); // Clear all GLCD display
 
 	while (1)
 	{
 		// Read input from virtual terminal
-		value[i] = uartReceive();
-		uartSendChar(value[i]);
+		value[i] = virTerminalReceive();
+		virTerminalSendChar(value[i]);
 		_delay_ms(1);
 
-		if (value[i] == '\n')
+		if (value[i] == '*')
 		{
 			memset(value, 0, sizeof(value));
 			i = -1;
@@ -176,14 +176,13 @@ void init()
 	buzzerInit();
 	tempInit();
 	ultrasonicInit();
-	uartInit();
+	virTerminalInit();
+	rfidInit();
 }
 
-int main()
+void menu()
 {
 	// eepromReset();
-
-	init();
 
 	while (1)
 	{
@@ -219,6 +218,14 @@ int main()
 			break;
 		}
 	}
+}
+
+int main()
+{
+	init();
+
+	// Display the main menu and handle user input
+	menu();
 
 	// Uncomment one of the following lines to test a specific component
 	// testUltrasonic();

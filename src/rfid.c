@@ -9,75 +9,33 @@ unsigned int k = 0, i = 0, j, l;
 unsigned char value1[] = { "140071D1A612" }; // Predefined ID
 unsigned char value2[] = { "51005D6899FD" };
 
-void usartinit()
+void rfidInit()
 {
-	UBRRH = 00;
-	UBRRL = 77;
-	UCSRB |= (1 << RXEN);
-	UCSRC |= (1 << URSEL) | (1 << UCSZ0) | (1 << UCSZ1);
+	UBRR1L = (unsigned char)BAUD_PRESCALER;
+	UBRR1H = (unsigned char)(BAUD_PRESCALER >> 8);
+	UCSR1B = (1 << RXEN) | (1 << TXEN);
+	// Set UCSZ1 and UCSZ0 for 8-bit data
+	UCSR1C = (1 << UCSZ1) | (1 << UCSZ0);
 }
 
-void softwareUartInit()
+void rfidSendChar(char data)
 {
-	// Set TX pin as output
-	RFID_DDR |= (1 << RFID_TX_PIN);
-	// Set RX pin as input
-	RFID_DDR &= ~(1 << RFID_RX_PIN);
-	// Enable pull-up resistor on RX pin
-	RFID_PORT |= (1 << RFID_RX_PIN);
-}
-
-void softwareUartSend(unsigned char data)
-{
-	// Start bit
-	RFID_PORT &= ~(1 << RFID_TX_PIN);
-	_delay_us(BIT_DELAY);
-
-	// Data bits
-	uint8_t i;
-	for (i = 0; i < 8; i++)
-	{
-		if (data & (1 << i))
-			RFID_PORT |= (1 << RFID_TX_PIN);
-		else
-			RFID_PORT &= ~(1 << RFID_TX_PIN);
-		_delay_us(BIT_DELAY);
-	}
-
-	// Stop bit
-	RFID_PORT |= (1 << RFID_TX_PIN);
-	_delay_us(BIT_DELAY);
-}
-
-unsigned char softwareUartReceive()
-{
-	unsigned char data = 0;
-
-	// Wait for start bit
-	while (RFID_PIN & (1 << RFID_RX_PIN))
+	while (!(UCSR1A & (1 << UDRE1)))
 		;
-
-	_delay_us(BIT_DELAY / 2);
-
-	// Data bits
-	uint8_t i;
-	for (i = 0; i < 8; i++)
-	{
-		_delay_us(BIT_DELAY);
-		if (RFID_PIN & (1 << RFID_RX_PIN))
-			data |= (1 << i);
-	}
-
-	// Wait for stop bit
-	_delay_us(BIT_DELAY);
-
-	return data;
+	UDR1 = data;
 }
 
-void softwareUartSendString(const char* str)
+void rfidSendString(char* str)
 {
 	while (*str)
 	{
-		softwareUartSend(*str++);
+		rfidSendChar(*str++);
 	}
+}
+
+char rfidReceive()
+{
+	while (!(UCSR1A & (1 << RXC1)))
+		;
+	return UDR1;
 }
