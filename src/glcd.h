@@ -1,4 +1,5 @@
 #include <avr/io.h>
+#include <avr/iom64.h>
 #include <inttypes.h>
 #include <util/delay.h> /* Include defined delay header file */
 
@@ -10,12 +11,12 @@
 #define Data_Port_Dir DDRB /* Define data port for GLCD */
 #define Command_Port_Dir DDRA /* Define command port for GLCD */
 
-#define RS PA0 /* Define control pins */
-#define RW PA1
-#define EN PA2
-#define CS1 PA3
-#define CS2 PA4
-#define RST PA5
+#define GLCD_RS PA0 /* Define control pins */
+#define GLCD_RW PA1
+#define GLCD_EN PA2
+#define GLCD_CS1 PA3
+#define GLCD_CS2 PA4
+#define GLCD_RST PA5
 
 #define MaxWidth 23
 #define TotalPage 8

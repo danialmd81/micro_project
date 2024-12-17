@@ -215,8 +215,8 @@ void retrieveStudentData()
 	for (i = 0; i < studentCount; i++)
 	{
 		eepromReadString(address, studentCode);
-		uartSendString(studentCode);
-		uartSendString("\r\n");
+		virTerminalSendString(studentCode);
+		virTerminalSendString("\r\n");
 		address += STUDENT_CODE_SIZE;
 	}
 

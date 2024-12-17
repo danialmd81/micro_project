@@ -1,19 +1,19 @@
 #include "common.h"
 #include <avr/io.h>
-#include <avr/iom32.h>
+#include <avr/iom64.h>
 #include <util/delay.h>
 
 #ifndef VIRTUALTERMINAL_H
 #define VIRTUALTERMINAL_H
 
-// UART Pins (D0-D1)
-#define UART_DDR DDRD
-#define UART_TX PD1
-#define UART_RX PD0
+// virTerminal Pins (D0-D1)
+#define virTerminal_DDR DDRE
+#define virTerminal_TX PE0
+#define virTerminal_RX PE1
 
-void uartInit();
-void uartSendChar(char data);
-void uartSendString(char* str);
-char uartReceive();
+void virTerminalInit();
+void virTerminalSendChar(char data);
+void virTerminalSendString(char* str);
+char virTerminalReceive();
 
 #endif // VIRTUALTERMINAL_H

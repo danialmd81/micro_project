@@ -4,22 +4,22 @@
 void glcdCommand(char Command) /* GLCD command function */
 {
 	Data_Port = Command; /* Copy command on data pin */
-	Command_Port &= ~(1 << RS); /* Make RS LOW to select command register */
-	Command_Port &= ~(1 << RW); /* Make RW LOW to select write operation */
-	Command_Port |= (1 << EN); /* Make HIGH to LOW transition on Enable pin */
+	Command_Port &= ~(1 << GLCD_RS); /* Make RS LOW to select command register */
+	Command_Port &= ~(1 << GLCD_RW); /* Make RW LOW to select write operation */
+	Command_Port |= (1 << GLCD_EN); /* Make HIGH to LOW transition on Enable pin */
 	_delay_us(5);
-	Command_Port &= ~(1 << EN);
+	Command_Port &= ~(1 << GLCD_EN);
 	_delay_us(5);
 }
 
 void glcdData(char Data) /* GLCD data function */
 {
 	Data_Port = Data; /* Copy data on data pin */
-	Command_Port |= (1 << RS); /* Make RS HIGH to select data register */
-	Command_Port &= ~(1 << RW); /* Make RW LOW to select write operation */
-	Command_Port |= (1 << EN); /* Make HIGH to LOW transition on Enable pin */
+	Command_Port |= (1 << GLCD_RS); /* Make RS HIGH to select data register */
+	Command_Port &= ~(1 << GLCD_RW); /* Make RW LOW to select write operation */
+	Command_Port |= (1 << GLCD_EN); /* Make HIGH to LOW transition on Enable pin */
 	_delay_us(5);
-	Command_Port &= ~(1 << EN);
+	Command_Port &= ~(1 << GLCD_EN);
 	_delay_us(5);
 }
 
@@ -28,7 +28,7 @@ void glcdInit() /* GLCD initialize function */
 	Data_Port_Dir = 0xFF;
 	Command_Port_Dir = 0xFF;
 	/* Select both left & right half of display & Keep reset pin high */
-	Command_Port |= (1 << CS1) | (1 << CS2) | (1 << RST);
+	Command_Port |= (1 << GLCD_CS1) | (1 << GLCD_CS2) | (1 << GLCD_RST);
 	_delay_ms(20);
 	glcdCommand(0x3E); /* Display OFF */
 	glcdCommand(0x40); /* Set Y address (column=0) */
@@ -68,8 +68,8 @@ void glcdString(char page_no, char* str) /* GLCD string write function */
 	unsigned int Y_address = 0;
 	float Page_inc = 0.5;
 
-	Command_Port &= ~(1 << CS1); /* Select first Left half of display */
-	Command_Port |= (1 << CS2);
+	Command_Port &= ~(1 << GLCD_CS1); /* Select first Left half of display */
+	Command_Port |= (1 << GLCD_CS2);
 
 	glcdCommand(Page);
 	for (i = 0; str[i] != 0; i++) /* Print each char in string till null */
@@ -86,8 +86,8 @@ void glcdString(char page_no, char* str) /* GLCD string write function */
 						break;
 					glcdCommand(0x40); /* If not 5th and get overflowed then change Y address to START column */
 					Y_address = Y_address + column; /* Increment Y address count by column no. */
-					Command_Port ^= (1 << CS1); /* If yes then change segment controller to display on other half of display */
-					Command_Port ^= (1 << CS2);
+					Command_Port ^= (1 << GLCD_CS1); /* If yes then change segment controller to display on other half of display */
+					Command_Port ^= (1 << GLCD_CS2);
 					glcdCommand(Page + Page_inc); /* Execute command for page change */
 					Page_inc = Page_inc + 0.5; /* Increment Page No. by half */
 				}
@@ -102,8 +102,8 @@ void glcdString(char page_no, char* str) /* GLCD string write function */
 				glcdData(glcdFont[str[i] - 32][column]); /* If yes then then print character */
 				if ((Y_address + 1) % 64 == 0) /* check whether it gets overflowed  from either half of side */
 				{
-					Command_Port ^= (1 << CS1); /* If yes then change segment controller to display on other half of display */
-					Command_Port ^= (1 << CS2);
+					Command_Port ^= (1 << GLCD_CS1); /* If yes then change segment controller to display on other half of display */
+					Command_Port ^= (1 << GLCD_CS2);
 					glcdCommand((Page + Page_inc)); /* Execute command for page change */
 					Page_inc = Page_inc + 0.5; /* Increment Page No. by half */
 				}
@@ -117,8 +117,8 @@ void glcdString(char page_no, char* str) /* GLCD string write function */
 				glcdData(glcdFont[str[i] - 32][column]); /* Then continue to print hat char */
 				if ((Y_address + 1) % 64 == 0) /* check whether it gets overflowed  from either half of side */
 				{
-					Command_Port ^= (1 << CS1); /* If yes then change segment controller to display on other half of display */
-					Command_Port ^= (1 << CS2);
+					Command_Port ^= (1 << GLCD_CS1); /* If yes then change segment controller to display on other half of display */
+					Command_Port ^= (1 << GLCD_CS2);
 					glcdCommand((Page + Page_inc)); /* Execute command for page change */
 					Page_inc = Page_inc + 0.5; /* Increment Page No. by half */
 				}
@@ -128,8 +128,8 @@ void glcdString(char page_no, char* str) /* GLCD string write function */
 			Y_address++; /* Increment Y_address count for last added zero */
 			if ((Y_address) % 64 == 0) /* check whether it gets overflowed  from either half of side */
 			{
-				Command_Port ^= (1 << CS1);
-				Command_Port ^= (1 << CS2); /* If yes then change segment controller to display on other half of display */
+				Command_Port ^= (1 << GLCD_CS1);
+				Command_Port ^= (1 << GLCD_CS2); /* If yes then change segment controller to display on other half of display */
 				glcdCommand((Page + Page_inc)); /* Execute command for page change */
 				Page_inc = Page_inc + 0.5; /* Increment Page No. by half */
 			}

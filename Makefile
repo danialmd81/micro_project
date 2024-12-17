@@ -1,4 +1,4 @@
-MCU = atmega32
+MCU = atmega64
 F_CPU = 8000000UL
 BAUD = 9600
 

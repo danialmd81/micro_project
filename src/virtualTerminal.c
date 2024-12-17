@@ -1,32 +1,32 @@
 #include "virtualTerminal.h"
 
-void uartInit()
+void virTerminalInit()
 {
-	UBRRL = (unsigned char)BAUD_PRESCALER;
-	UBRRH = (unsigned char)(BAUD_PRESCALER >> 8);
-	UCSRB = (1 << RXEN) | (1 << TXEN);
+	UBRR0L = (unsigned char)BAUD_PRESCALER;
+	UBRR0H = (unsigned char)(BAUD_PRESCALER >> 8);
+	UCSR0B = (1 << RXEN) | (1 << TXEN);
 	// Set UCSZ1 and UCSZ0 for 8-bit data
-	UCSRC = (1 << UCSZ1) | (1 << UCSZ0);
+	UCSR0C = (1 << UCSZ1) | (1 << UCSZ0);
 }
 
-void uartSendChar(char data)
+void virTerminalSendChar(char data)
 {
-	while (!(UCSRA & (1 << UDRE)))
+	while (!(UCSR0A & (1 << UDRE0)))
 		;
-	UDR = data;
+	UDR0 = data;
 }
 
-void uartSendString(char* str)
+void virTerminalSendString(char* str)
 {
 	while (*str)
 	{
-		uartSendChar(*str++);
+		virTerminalSendChar(*str++);
 	}
 }
 
-char uartReceive()
+char virTerminalReceive()
 {
-	while (!(UCSRA & (1 << RXC)))
+	while (!(UCSR0A & (1 << RXC0)))
 		;
-	return UDR;
+	return UDR0;
 }

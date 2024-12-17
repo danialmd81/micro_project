@@ -1,5 +1,5 @@
 #include <avr/io.h>
-#include <avr/iom32.h>
+#include <avr/iom64.h>
 
 #ifndef BUZZER_H
 #define BUZZER_H

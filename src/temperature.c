@@ -1,23 +1,16 @@
 #include "temperature.h"
-#include <avr/io.h>
-#include <util/delay.h>
-
-uint16_t lastTempReading = 0; // Global variable to store ADC value
-float ADC_Scale_Factor = 5.0 / 1024.0;
 
 void tempInit(void)
 {
-	// Set PA6 (ADC6) and PA7 (ADC7) as input
-	TEMP_DDR &= ~(1 << TEMP_PIN);
-	TEMP_DDR &= ~(1 << (TEMP_PIN + 1));
+	// Set PF0 (ADC0) and PF1 (ADC1) as input
+	TEMP_DDR &= ~(1 << TEMP_PIN0);
+	TEMP_DDR &= ~(1 << TEMP_PIN1);
 
-	// Configure ADC
-	ADMUX = (1 << REFS0); // AVCC as reference
+	// Set reference voltage to AVcc (5V) and select TEMP_PIN0 (ADC0) and TEMP_PIN1
+	ADMUX = (1 << REFS0) | (TEMP_PIN0 & 0x07) | (TEMP_PIN1 & 0x07);
 
-	ADCSRA = (1 << ADEN) | // Enable ADC
-		(1 << ADPS2) | // Prescaler 128 for 16MHz
-		(1 << ADPS1) | // (16MHz/128 = 125KHz)
-		(1 << ADPS0);
+	// Enable ADC, set prescaler to 128 (8MHz/128 = 62.5kHz)
+	ADCSRA = (1 << ADEN) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
 }
 
 uint16_t ADC_Read(uint8_t channel)
@@ -36,11 +29,14 @@ uint16_t ADC_Read(uint8_t channel)
 	return ADCW;
 }
 
-int getTemp(void)
+int getTemp()
 {
+	// ADC_Scale_Factor is used to convert the raw ADC value to a voltage.
+	float ADC_Scale_Factor = 5.0 / 1024.0;
+
 	// Read ADC values for Vout and Vgnd
-	uint16_t ADC_Vout_Sample = ADC_Read(6);
-	uint16_t ADC_Vgnd_Sample = ADC_Read(7);
+	uint16_t ADC_Vout_Sample = ADC_Read(TEMP_PIN0);
+	uint16_t ADC_Vgnd_Sample = ADC_Read(TEMP_PIN1);
 
 	// Convert ADC values to voltages
 	float ADC_Vout_Voltage = ADC_Vout_Sample * ADC_Scale_Factor;
@@ -50,9 +46,16 @@ int getTemp(void)
 	float Temp_Value = (ADC_Vout_Voltage - ADC_Vgnd_Voltage) / 0.01;
 	int temp;
 	if (Temp_Value < 0)
-		temp = (int)(2.0 * Temp_Value);
-	else
+	{
+		Temp_Value *= 2.0;
+		Temp_Value += 0.5; // telorance for casting to int
 		temp = (int)(Temp_Value);
+	}
+	else
+	{
+		Temp_Value += 0.5; // telorance for casting to int
+		temp = (int)(Temp_Value);
+	}
 
 	return temp;
 }
