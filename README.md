@@ -4,8 +4,7 @@
 
 ### Danial
 
-- Support for RFID cards (extra credit)
-  - To facilitate attendance registration, you can use RFID cards for students so that instead of manually entering a code, they swipe their card and their attendance is automatically recorded.
+- how to show rfid in presentation
 
 ### Behdad
 
