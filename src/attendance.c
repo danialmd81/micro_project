@@ -5,11 +5,10 @@ int presentStudents = 0; // Store the number of present students at any po
 void submitStudentCode()
 {
 	glcdClearAll();
+	//glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
 	glcdString(0, "Enter Student Code:");
-	char studentCode[STUDENT_CODE_SIZE]; // 40130023
-	memset(studentCode, 0, STUDENT_CODE_SIZE);
+	char studentCode[STUDENT_CODE_SIZE] = {0};
 	int index = 0;
-
 	char key;
 
 	while (1)
@@ -17,124 +16,146 @@ void submitStudentCode()
 		key = keypadGetkey();
 		if (key == '=') // Assuming '#' is used to submit the code
 		{
-			studentCode[index] = '\0';
+			if(index == 8){
+				if (searchStudent(studentCode) != -1)
+				{
+					glcdString(2, "Code Already Exists");
+					buzzerOn();
+					_delay_ms(500);
+					buzzerOff();
+					index = 0;
+					memset(studentCode, 0, STUDENT_CODE_SIZE);
+					glcdString(1, "                "); // Clear the input line
+					glcdString(2, "                "); // Clear the input line
+				}
+				else
+				{
+					saveStudent(studentCode);
+					glcdString(2, "Code Accepted");
+					_delay_ms(700);
+					index = 0;
+					memset(studentCode, 0, STUDENT_CODE_SIZE);
+					glcdString(1, "                "); // Clear the input line
+					glcdString(2, "                "); // Clear the input line
+				}
+			}
+			else{
+				glcdString(2, "Invalid Code");
+				buzzerOn();
+				_delay_ms(500);
+				buzzerOff();
+				glcdString(2, "                "); // Clear the input line
+				continue;
+			}
+		}
+		else if(key == '*'){
 			break;
 		}
-		else if (key == '*') // Assuming '*' is used to clear the input
+		else if (key == 'c') // Assuming '*' is used to clear the input
 		{
 			index = 0;
+			memset(studentCode, 0, STUDENT_CODE_SIZE);
 			glcdString(1, "                "); // Clear the input line
 		}
-		else
+		else if(isdigit(key))	
 		{
-			studentCode[index++] = key;
-			glcdString(1, studentCode);
+            if (index < STUDENT_CODE_SIZE)
+            {
+                studentCode[index++] = key;
+                glcdString(1, studentCode);
+            }
+            else
+            {
+                glcdString(2, "Invalid Code");
+                buzzerOn();
+                _delay_ms(500);
+                buzzerOff();
+                glcdString(2, "                "); // Clear the input line
+            }
 		}
-	}
-
-	// Validate the student code
-	if (index != 8) // Assuming student code length should be 8
-	{
-		glcdString(1, "Invalid Code");
-		buzzerOn();
-		_delay_ms(500);
-		buzzerOff();
-	}
-	else
-	{
-		if (searchStudent(studentCode) != -1)
-		{
-			glcdString(1, "Code Already Exists");
+		else{
+			glcdString(2, "Invalid Key");
 			buzzerOn();
 			_delay_ms(500);
 			buzzerOff();
-		}
-		else
-		{
-			saveStudent(studentCode);
-			glcdString(1, "Code Accepted");
-		}
-	}
-
-	_delay_ms(700);
-	return attendanceInitialization(); // Return to attendance ready state
-}
-
-void attendanceInitialization()
-{
-	glcdClearAll();
-
-	glcdString(0, "1.Submit Student Code");
-	glcdString(1, "2.Exit");
-	char key;
-	while (1)
-	{
-		key = keypadGetkey();
-		switch (key)
-		{
-		case '1':
-			submitStudentCode();
-			break;
-		case '2':
-			return;
-		}
+			glcdString(2, "                ");
+			}
 	}
 }
 
 void studentManagement()
 {
 	glcdClearAll();
-	glcdString(0, "1.Search Students");
-	glcdString(1, "2.Exit");
-
+	//glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
+	glcdString(0, "Enter Student Code:");
+	char studentCode[STUDENT_CODE_SIZE]; // 40130023
+	memset(studentCode, 0, STUDENT_CODE_SIZE);
+	int index = 0;
 	char key;
+
 	while (1)
 	{
 		key = keypadGetkey();
-		switch (key)
+		if (key == '=') // Assuming '#' is used to submit the code
 		{
-		case '1':
-			glcdClearAll();
-			glcdString(0, "Enter Student Code:");
-			char studentCode[STUDENT_CODE_SIZE];
-			memset(studentCode, 0, STUDENT_CODE_SIZE);
-			int index = 0;
-			char key;
-
-			while (1)
-			{
-				key = keypadGetkey();
-				if (key == '=') // Assuming '=' is used to submit the code
+			if(index == 8){
+				if (searchStudent(studentCode) != -1)
 				{
-					studentCode[index] = '\0';
-					break;
-				}
-				else if (key == '*') // Assuming '*' is used to clear the input
-				{
+					glcdString(2, "Student Present");
 					index = 0;
 					glcdString(1, "                "); // Clear the input line
+					glcdString(2, "                "); // Clear the input line
 				}
 				else
 				{
-					studentCode[index++] = key;
-					glcdString(1, studentCode);
+					glcdString(2, "Student Absent");
+					buzzerOn();
+					_delay_ms(500);
+					buzzerOff();
+					index = 0;
+					glcdString(1, "                "); // Clear the input line
+					glcdString(2, "                "); // Clear the input line
 				}
 			}
-			if (searchStudent(studentCode) != -1)
-			{
-				glcdString(1, "Student Present");
-				_delay_ms(700);
+			else{
+				glcdString(2, "Invalid Code");
+				buzzerOn();
+				_delay_ms(500);
+				buzzerOff();
+				glcdString(2, "                "); // Clear the input line
+				continue;
 			}
-			else
-			{
-				glcdString(1, "Student Absent");
-				_delay_ms(700);
-			}
-			return studentManagement();
-			break;
-		case '2':
-			return;
 		}
+		else if(key == '*'){
+			break;
+		}
+		else if (key == 'c') // Assuming '*' is used to clear the input
+		{
+			index = 0;
+			memset(studentCode, '0', STUDENT_CODE_SIZE);
+			glcdString(1, "                "); // Clear the input line
+		}
+		else if(key == '1' || key == '2' || key == '3' || key == '4' || key == '5' || key == '6' || key == '7' || key == '8' || key == '9' || key == '0')
+		{
+			if(index > 7){
+				glcdString(2, "Invalid Code");
+				buzzerOn();
+				_delay_ms(500);
+				buzzerOff();
+				glcdString(2, "                "); // Clear the input line
+				continue;
+			}
+			studentCode[index] = key;
+			glcdString(1, studentCode);
+			index++;
+		}
+		else{
+			glcdString(2, "Invalid Key");
+			buzzerOn();
+			_delay_ms(500);
+			buzzerOff();
+			glcdString(2, "                ");
+			}
 	}
 }
 
@@ -142,8 +163,7 @@ void viewPresentStudents()
 {
 	glcdClearAll();
 	uint16_t address = STUDENT_START_ADDRESS;
-	char buffer[BUFFER_SIZE];
-	char studentCode[STUDENT_CODE_SIZE];
+	char buffer[12];
 	int presentCount = loadStudentNumber();
 
 	// Display the number of present students
@@ -154,10 +174,12 @@ void viewPresentStudents()
 	uint16_t i;
 	for (i = 0; i < presentCount; i++)
 	{
-		eepromReadString(address, studentCode);
-		glcdString(i % 7 + 1, studentCode);
+		char student[STUDENT_INFO_SIZE];
+		eepromReadString(address, student);
+		glcdString(1, student);
 		_delay_ms(1000);
-		address += STUDENT_CODE_SIZE;
+		glcdString(1, "                "); // Clear the line
+		address += STUDENT_INFO_SIZE;
 	}
 
 	// Return to the main menu after displaying all student codes
@@ -208,16 +230,16 @@ void retrieveStudentData()
 	_delay_ms(700);
 
 	uint16_t address = STUDENT_START_ADDRESS;
-	char studentCode[STUDENT_CODE_SIZE];
 	uint16_t studentCount = loadStudentNumber();
 
 	uint16_t i;
 	for (i = 0; i < studentCount; i++)
 	{
-		eepromReadString(address, studentCode);
-		virTerminalSendString(studentCode);
+		char student[STUDENT_INFO_SIZE];
+		eepromReadString(address, student);
+		virTerminalSendString(student);
 		virTerminalSendString("\r\n");
-		address += STUDENT_CODE_SIZE;
+		address += STUDENT_INFO_SIZE;
 	}
 
 	glcdClearAll();
@@ -276,11 +298,11 @@ void trafficMonitoring()
 void removeStudent()
 {
 	glcdClearAll();
+	//glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
 	glcdString(0, "Enter Student Code:");
 	char studentCode[STUDENT_CODE_SIZE]; // 40130023
 	memset(studentCode, 0, STUDENT_CODE_SIZE);
 	int index = 0;
-
 	char key;
 
 	while (1)
@@ -288,49 +310,65 @@ void removeStudent()
 		key = keypadGetkey();
 		if (key == '=') // Assuming '#' is used to submit the code
 		{
-			studentCode[index] = '\0';
+			if(index == 8){
+				if (searchStudent(studentCode) != -1)
+				{
+					glcdString(2, "Student Removed");
+					removeStudentCode(studentCode);
+					_delay_ms(700);
+					index = 0;
+					glcdString(1, "                "); // Clear the input line
+					glcdString(2, "                "); // Clear the input line
+				}
+				else
+				{
+					glcdString(2, "Student Not Found");
+					buzzerOn();
+					_delay_ms(700);
+					buzzerOff();
+					index = 0;
+					glcdString(1, "                "); // Clear the input line
+					glcdString(2, "                "); // Clear the input line
+				}
+			}
+			else{
+				glcdString(2, "Invalid Code");
+				buzzerOn();
+				_delay_ms(500);
+				buzzerOff();
+				glcdString(2, "                "); // Clear the input line
+				continue;
+			}
+		}
+		else if(key == '*'){
 			break;
 		}
-		else if (key == '*') // Assuming '*' is used to clear the input
+		else if (key == 'c') // Assuming '*' is used to clear the input
 		{
 			index = 0;
+			memset(studentCode, ' ', STUDENT_CODE_SIZE);
 			glcdString(1, "                "); // Clear the input line
 		}
-		else
+		else if(key == '1' || key == '2' || key == '3' || key == '4' || key == '5' || key == '6' || key == '7' || key == '8' || key == '9' || key == '0')
 		{
-			studentCode[index++] = key;
+			if(index > 7){
+				glcdString(2, "Invalid Code");
+				buzzerOn();
+				_delay_ms(700);
+				buzzerOff();
+				glcdString(2, "                "); // Clear the input line
+				continue;
+			}
+			studentCode[index] = key;
 			glcdString(1, studentCode);
+			index++;
 		}
-	}
-
-	// Validate the student code
-	if (index != 8) // Assuming student code length should be 8
-	{
-		glcdString(2, "Invalid Code");
-		buzzerOn();
-		_delay_ms(500);
-		buzzerOff();
-	}
-	else
-	{
-		// Save the student code to EEPROM
-		// char buffer[16];
-		// sprintf(buffer, "student %d", searchStudent(studentCode));
-		// glcdString(2, 0, buffer);
-		if (searchStudent(studentCode) == -1)
-		{
-			glcdString(2, "Code Not Found");
+		else{
+			glcdString(2, "Invalid Key");
 			buzzerOn();
-			_delay_ms(500);
+			_delay_ms(700);
 			buzzerOff();
-		}
-		else
-		{
-			removeStudentCode(studentCode);
-			glcdString(2, "Code Removed");
-		}
+			glcdString(2, "                ");
+			}
 	}
-
-	_delay_ms(700);
-	return; // Return to attendance ready state
 }

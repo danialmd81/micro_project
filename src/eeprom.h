@@ -13,13 +13,14 @@
 #include "common.h"
 
 //
-#define BUFFER_SIZE 44
+//#define BUFFER_SIZE 44
 
 //
 #define EEPROM_SIZE 0x3ff
 #define STUDENT_NUMBER_ADDRESS 0x0000
 #define STUDENT_START_ADDRESS 0x0010
-#define STUDENT_CODE_SIZE 9
+#define STUDENT_CODE_SIZE 8
+#define STUDENT_INFO_SIZE 48
 #define STUDENT_MAX_NUMBER 150
 
 void eepromReset();

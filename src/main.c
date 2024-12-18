@@ -6,6 +6,7 @@
 #include "rfid.h"
 #include "ultrasonic.h"
 #include "virtualTerminal.h"
+#include "ds1307.h"
 
 /*
 atmega64 setting
@@ -23,6 +24,21 @@ UART
 {PARITY=NONE}
 {STOPBITS=1}
 */
+
+void displayTimeAndDate()
+{
+    uint8_t hour, minute, second;
+    uint8_t day, date, month, year;
+    char buffer[20];
+
+    ds1307GetTime(&hour, &minute, &second);
+    ds1307GetDate(&day, &date, &month, &year);
+
+    sprintf(buffer, "Time: %02d:%02d:%02d", hour, minute, second);
+	virTerminalSendString(buffer);
+    sprintf(buffer, "Date: %02d/%02d/20%02d", date, month, year);
+    virTerminalSendString(buffer);
+}
 
 void testUltrasonic()
 {
@@ -167,6 +183,7 @@ void displayMainMenu()
 	glcdString(4, "5.Student Data");
 	glcdString(5, "6.Traffic Monitoring");
 	glcdString(6, "7.Remove Student");
+	glcdString(7, "8.Reset EEPROM");
 }
 
 void init()
@@ -178,12 +195,11 @@ void init()
 	ultrasonicInit();
 	virTerminalInit();
 	rfidInit();
+	ds1307Init();
 }
 
 void menu()
 {
-	// eepromReset();
-
 	while (1)
 	{
 		displayMainMenu();
@@ -191,7 +207,7 @@ void menu()
 		switch (key)
 		{
 		case '1':
-			attendanceInitialization();
+			submitStudentCode();
 			break;
 		case '2':
 			studentManagement();
@@ -211,6 +227,9 @@ void menu()
 		case '7':
 			removeStudent();
 			break;
+        case '8':
+            eepromReset();
+            break;
 		default:
 			buzzerOn();
 			_delay_ms(200);
