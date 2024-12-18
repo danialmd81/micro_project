@@ -13,7 +13,7 @@
 #include "ultrasonic.h"
 #include "virtualTerminal.h"
 
-void attendanceInitialization();
+void submitStudentCode();
 void studentManagement();
 void viewPresentStudents();
 void temperatureMonitoring();
