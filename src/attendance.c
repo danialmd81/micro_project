@@ -29,8 +29,8 @@ void submitStudentCode()
 					buzzerOff();
 					index = 0;
 					memset(studentCode, 0, STUDENT_CODE_SIZE);
-					glcdString(1, "                "); // Clear the input line
-					glcdString(2, "                "); // Clear the input line
+					glcdClearLine(1);
+					glcdClearLine(2);
 				}
 				else
 				{
@@ -39,8 +39,8 @@ void submitStudentCode()
 					_delay_ms(700);
 					index = 0;
 					memset(studentCode, 0, STUDENT_CODE_SIZE);
-					glcdString(1, "                "); // Clear the input line
-					glcdString(2, "                "); // Clear the input line
+					glcdClearLine(1);
+					glcdClearLine(2);
 				}
 			}
 			else
@@ -49,20 +49,19 @@ void submitStudentCode()
 				buzzerOn();
 				_delay_ms(500);
 				buzzerOff();
-				glcdString(2, "                "); // Clear the input line
-				continue;
+				glcdClearLine(2);
 			}
-			break;
+			memset(studentCode, 0, STUDENT_CODE_SIZE);
 		}
-		else if (key == '*')
+		else if (key == '*') // Assuming '*' is used to exit the input
 		{
 			break;
 		}
-		else if (key == 'c') // Assuming '*' is used to clear the input
+		else if (key == 'c') // Assuming 'c' is used to clear the input
 		{
 			index = 0;
 			memset(studentCode, 0, STUDENT_CODE_SIZE);
-			glcdString(1, "                "); // Clear the input line
+			glcdClearLine(1);
 		}
 		else if (isdigit(key))
 		{
@@ -77,7 +76,7 @@ void submitStudentCode()
 				buzzerOn();
 				_delay_ms(500);
 				buzzerOff();
-				glcdString(2, "                "); // Clear the input line
+				glcdClearLine(2);
 			}
 		}
 		else
@@ -86,7 +85,7 @@ void submitStudentCode()
 			buzzerOn();
 			_delay_ms(500);
 			buzzerOff();
-			glcdString(2, "                ");
+			glcdClearLine(2);
 		}
 	}
 }
@@ -104,16 +103,17 @@ void studentManagement()
 	while (1)
 	{
 		key = keypadGetkey();
-		if (key == '=') // Assuming '#' is used to submit the code
+		if (key == '=') // Assuming '=' is used to submit the code
 		{
 			if (index == 8)
 			{
 				if (searchStudent(studentCode) != -1)
 				{
 					glcdString(2, "Student Present");
+					_delay_ms(500);
 					index = 0;
-					glcdString(1, "                "); // Clear the input line
-					glcdString(2, "                "); // Clear the input line
+					glcdClearLine(1);
+					glcdClearLine(2);
 				}
 				else
 				{
@@ -122,8 +122,8 @@ void studentManagement()
 					_delay_ms(500);
 					buzzerOff();
 					index = 0;
-					glcdString(1, "                "); // Clear the input line
-					glcdString(2, "                "); // Clear the input line
+					glcdClearLine(1);
+					glcdClearLine(2);
 				}
 			}
 			else
@@ -132,21 +132,22 @@ void studentManagement()
 				buzzerOn();
 				_delay_ms(500);
 				buzzerOff();
-				glcdString(2, "                "); // Clear the input line
-				continue;
+				index = 0;
+				glcdClearLine(1);
 			}
+			memset(studentCode, 0, STUDENT_CODE_SIZE);
 		}
-		else if (key == '*')
+		else if (key == '*') // Assuming '*' is used to exit the input
 		{
 			break;
 		}
-		else if (key == 'c') // Assuming '*' is used to clear the input
+		else if (key == 'c') // Assuming 'c' is used to clear the input
 		{
 			index = 0;
-			memset(studentCode, '0', STUDENT_CODE_SIZE);
-			glcdString(1, "                "); // Clear the input line
+			memset(studentCode, 0, STUDENT_CODE_SIZE);
+			glcdClearLine(1);
 		}
-		else if (key == '1' || key == '2' || key == '3' || key == '4' || key == '5' || key == '6' || key == '7' || key == '8' || key == '9' || key == '0')
+		else if (isdigit(key))
 		{
 			if (index > 7)
 			{
@@ -154,7 +155,7 @@ void studentManagement()
 				buzzerOn();
 				_delay_ms(500);
 				buzzerOff();
-				glcdString(2, "                "); // Clear the input line
+				glcdClearLine(2);
 				continue;
 			}
 			studentCode[index] = key;
@@ -167,7 +168,7 @@ void studentManagement()
 			buzzerOn();
 			_delay_ms(500);
 			buzzerOff();
-			glcdString(2, "                ");
+			glcdClearLine(2);
 		}
 	}
 }
@@ -191,7 +192,7 @@ void viewPresentStudents()
 		eepromReadString(address, student);
 		glcdString(1, student);
 		_delay_ms(1000);
-		glcdString(1, "                "); // Clear the line
+		glcdClearLine(1);
 		address += STUDENT_INFO_SIZE;
 	}
 
@@ -220,7 +221,6 @@ void temperatureMonitoring()
 			_delay_ms(20); // Debounce delay
 			if (keypadScan() == key)
 			{
-
 				// Verify key press
 				while (keypadScan() == key)
 					;
@@ -331,8 +331,8 @@ void removeStudent()
 					removeStudentCode(studentCode);
 					_delay_ms(700);
 					index = 0;
-					glcdString(1, "                "); // Clear the input line
-					glcdString(2, "                "); // Clear the input line
+					glcdClearLine(1);
+					glcdClearLine(2);
 				}
 				else
 				{
@@ -341,8 +341,8 @@ void removeStudent()
 					_delay_ms(700);
 					buzzerOff();
 					index = 0;
-					glcdString(1, "                "); // Clear the input line
-					glcdString(2, "                "); // Clear the input line
+					glcdClearLine(1);
+					glcdClearLine(2);
 				}
 			}
 			else
@@ -351,7 +351,7 @@ void removeStudent()
 				buzzerOn();
 				_delay_ms(500);
 				buzzerOff();
-				glcdString(2, "                "); // Clear the input line
+				glcdClearLine(2);
 				continue;
 			}
 		}
@@ -363,7 +363,7 @@ void removeStudent()
 		{
 			index = 0;
 			memset(studentCode, ' ', STUDENT_CODE_SIZE);
-			glcdString(1, "                "); // Clear the input line
+			glcdClearLine(1);
 		}
 		else if (key == '1' || key == '2' || key == '3' || key == '4' || key == '5' || key == '6' || key == '7' || key == '8' || key == '9' || key == '0')
 		{
@@ -373,7 +373,7 @@ void removeStudent()
 				buzzerOn();
 				_delay_ms(700);
 				buzzerOff();
-				glcdString(2, "                "); // Clear the input line
+				glcdClearLine(2);
 				continue;
 			}
 			studentCode[index] = key;
@@ -386,7 +386,7 @@ void removeStudent()
 			buzzerOn();
 			_delay_ms(700);
 			buzzerOff();
-			glcdString(2, "                ");
+			glcdClearLine(2);
 		}
 	}
 }

@@ -18,13 +18,14 @@
 #define GLCD_CS2 PA4
 #define GLCD_RST PA5
 
-#define MaxWidth 23
+#define LINE_SIZE 26
 #define TotalPage 8
 
 void glcdCommand(char Command); /* GLCD command function */
 void glcdData(char Data); /* GLCD data function */
 void glcdInit(); /* GLCD initialize function */
 void glcdClearAll(); /* GLCD all display clear function */
+void glcdClearLine(int page);
 void glcdString(char page_no, char* str); /* GLCD string write function */
 
 #endif
