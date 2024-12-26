@@ -11,7 +11,7 @@ void ultrasonicTrigger()
 {
 	// Send a 20us pulse to trigger the sensor
 	US_TRIG_PORT |= (1 << US_TRIG_PIN);
-	_delay_us(20);
+	_delay_ms(20);
 	US_TRIG_PORT &= ~(1 << US_TRIG_PIN);
 }
 
