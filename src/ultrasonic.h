@@ -6,12 +6,12 @@
 #include <util/delay.h>
 
 // Ultrasonic Pins (D2-D3)
-#define US_TRIG_DDR DDRD
-#define US_ECHO_DDR DDRD
-#define US_TRIG_PORT PORTD
-#define US_ECHO_PORT PIND
-#define US_TRIG_PIN PD0
-#define US_ECHO_PIN PD1
+#define US_TRIG_DDR DDRF
+#define US_ECHO_DDR DDRF
+#define US_TRIG_PORT PORTF
+#define US_ECHO_PORT PINF
+#define US_TRIG_PIN PF3
+#define US_ECHO_PIN PF2
 #define CALIBRATION_FACTOR 58.0 // 58 us/cm
 #define US_ERROR -1 // Error indicator
 #define US_NO_OBSTACLE -2 // No obstacle indicator

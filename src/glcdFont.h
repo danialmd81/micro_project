@@ -5,7 +5,7 @@
 
 #define FontWidth 5
 
-char glcdFont[][5] = /* Define char fonts array in column by row in flash memory */
+const char glcdFont[][5] = /* Define char fonts array in column by row in flash memory */
 	{
 		{ 0x00, 0x00, 0x00, 0x00, 0x00 } // 20 (Space)
 		,
