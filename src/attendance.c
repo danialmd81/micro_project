@@ -5,9 +5,9 @@ int presentStudents = 0; // Store the number of present students at any po
 void submitStudentCode()
 {
 	glcdClearAll();
-	//glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
+	// glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
 	glcdString(0, "Enter Student Code:");
-	char studentCode[STUDENT_CODE_SIZE] = {0};
+	char studentCode[STUDENT_CODE_SIZE] = { 0 };
 	int index = 0;
 	char key;
 
@@ -77,7 +77,7 @@ void submitStudentCode()
 				glcdClearLine(2);
 			}
 		}
-		else if(isdigit(key))	
+		else if (isdigit(key))
 		{
 			glcdString(2, "Invalid Key");
 			buzzerOn();
@@ -103,6 +103,7 @@ void studentManagement()
 		key = keypadGetkey();
 		if (key == '=') // Assuming '=' is used to submit the code
 		{
+			studentCode[index] = '\0';
 			if (index == 8)
 			{
 				if (searchStudent(studentCode) != -1)
@@ -168,36 +169,6 @@ void studentManagement()
 			buzzerOff();
 			glcdClearLine(2);
 		}
-		else if(key == '*'){
-			break;
-		}
-		else if (key == 'c') // Assuming '*' is used to clear the input
-		{
-			index = 0;
-			memset(studentCode, '0', STUDENT_CODE_SIZE);
-			glcdString(1, "                "); // Clear the input line
-		}
-		else if(key == '1' || key == '2' || key == '3' || key == '4' || key == '5' || key == '6' || key == '7' || key == '8' || key == '9' || key == '0')
-		{
-			if(index > 7){
-				glcdString(2, "Invalid Code");
-				buzzerOn();
-				_delay_ms(500);
-				buzzerOff();
-				glcdString(2, "                "); // Clear the input line
-				continue;
-			}
-			studentCode[index] = key;
-			glcdString(1, studentCode);
-			index++;
-		}
-		else{
-			glcdString(2, "Invalid Key");
-			buzzerOn();
-			_delay_ms(500);
-			buzzerOff();
-			glcdString(2, "                ");
-			}
 	}
 }
 

@@ -16,5 +16,6 @@ extern unsigned char keypad[4][4];
 void keypadInit();
 char keypadScan();
 char keypadGetkey();
+int isdigit(char c);
 
 #endif // KEYPAD_H
