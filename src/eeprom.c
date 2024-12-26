@@ -8,6 +8,9 @@ void eepromReset()
 		eeprom_write_byte((uint8_t*)i, 0xFF);
 	}
 	saveStudentNumber(0);
+	buzzerOn();
+	_delay_ms(200);
+	buzzerOff();
 }
 
 // Function to write a string to EEPROM
@@ -37,9 +40,9 @@ void eepromReadString(uint16_t address, char* buffer)
 // save student nuber in eeprom
 void saveStudentNumber(uint16_t number)
 {
-    char buffer[10];
-    sprintf(buffer, "%u", number);
-    eepromWriteString(STUDENT_NUMBER_ADDRESS, buffer);
+	char buffer[8];
+	sprintf(buffer, "%u", number);
+	eepromWriteString(STUDENT_NUMBER_ADDRESS, buffer);
 }
 // load student number from eeprom
 uint16_t loadStudentNumber()
@@ -48,14 +51,14 @@ uint16_t loadStudentNumber()
     eepromReadString(STUDENT_NUMBER_ADDRESS, buffer);
     uint16_t studentNumber = atoi(buffer);
 
-    if (studentNumber <= STUDENT_MAX_NUMBER)
-    {
-        return studentNumber;
-    }
-    else
-    {
-        return 0;
-    }
+	if (studentNumber <= STUDENT_MAX_NUMBER)
+	{
+		return studentNumber;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 // for the first time i don't know to do what
@@ -64,21 +67,22 @@ void saveStudent(char studentCode[STUDENT_CODE_SIZE])
 {
 	uint16_t address = STUDENT_START_ADDRESS + loadStudentNumber() * STUDENT_INFO_SIZE;
 	char student[STUDENT_INFO_SIZE];
-    uint8_t hour, minute, second, day, date, month, year;
-    char buffer[40];
+	uint8_t hour, minute, second, day, date, month, year;
+	char buffer[DATE_SIZE];
 
-    ds1307GetTime(&hour, &minute, &second);
-    ds1307GetDate(&day, &date, &month, &year);
+	ds1307GetTime(&hour, &minute, &second);
+	ds1307GetDate(&day, &date, &month, &year);
 
-    sprintf(buffer, "Date: %02d/%02d/20%02d  %02d:%02d:%02d\0", date, month, year, hour, minute, second);
-	strcat(studentCode, buffer);
-	eepromWriteString(address, studentCode);
+	// sprintf(buffer, "%02d/%02d/%02d %02d:%02d:%02d\0", date, month, year, hour, minute, second);
+	sprintf(buffer, "%02d/%02d/%02d %02d:%02d\0", date, month, year, hour, minute);
+	sprintf(student, "%s %s", studentCode, buffer);
+	eepromWriteString(address, student);
 
 	saveStudentNumber(loadStudentNumber() + 1);
 }
 
 // return address of student if exist else return -1
-uint16_t searchStudent(char* studentCode)
+uint16_t searchStudent(char studentCode[STUDENT_CODE_SIZE])
 {
 	uint16_t address = STUDENT_START_ADDRESS;
 	char buffer[STUDENT_INFO_SIZE];
@@ -87,7 +91,7 @@ uint16_t searchStudent(char* studentCode)
 	for (i = 0; i < loadStudentNumber(); i++)
 	{
 		eepromReadString(address, buffer);
-		if (strncmp(buffer, studentCode,STUDENT_CODE_SIZE) == 0)
+		if (strncmp(buffer, studentCode, STUDENT_CODE_SIZE - 1) == 0)
 		{
 			return address;
 		}
@@ -97,7 +101,7 @@ uint16_t searchStudent(char* studentCode)
 	return (uint16_t)-1;
 }
 
-void removeStudentCode(char* studentCode)
+void removeStudentCode(char studentCode[STUDENT_CODE_SIZE])
 {
 	uint16_t address = searchStudent(studentCode);
 	if (address != (uint16_t)-1)

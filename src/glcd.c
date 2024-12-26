@@ -39,26 +39,28 @@ void glcdInit() /* GLCD initialize function */
 
 void glcdClearAll() /* GLCD all display clear function */
 {
+	char line[LINE_SIZE];
+	memset(line, 32, LINE_SIZE - 1);
+	line[LINE_SIZE - 1] = 0;
 	int i;
 	for (i = 0; i < TotalPage; i++)
 	{
-		glcdString(i, "                          "); /* Print 26 spaces in each page */
+		glcdString(i, line); /* Print 26 spaces in each page */
 	}
 
-	// int i, j;
-	// /* Select both left & right half of display */
-	// Command_Port |= (1 << CS1) | (1 << CS2);
-	// for (i = 0; i < TotalPage; i++)
-	// {
-	// 	glcdCommand((0xB8) + i); /* Increment page each time after 64 column */
-	// 	glcdCommand(0x40); /* Set Y address (column=0) */
-	// 	for (j = 0; j < 128; j++)
-	// 	{
-	// 		glcdData(0); /* Write zeros to all 128 columns */
-	// 	}
-	// }
+	/* Reset to initial position */
 	glcdCommand(0x40); /* Set Y address (column=0) */
-	glcdCommand(0xB8); /* Set x address (page=0) */
+	glcdCommand(0xB8); /* Set X address (page=0) */
+}
+
+void glcdClearLine(int page)
+{
+	char line[LINE_SIZE];
+	memset(line, 32, LINE_SIZE - 1);
+	line[LINE_SIZE - 1] = 0;
+	glcdString(page, line);
+	glcdCommand(0x40); /* Set Y address (column=0) */
+	glcdCommand(0xB8); /* Set X address (page=0) */
 }
 
 void glcdString(char page_no, char* str) /* GLCD string write function */

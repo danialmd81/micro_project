@@ -1,5 +1,6 @@
 #include "attendance.h"
 #include "buzzer.h"
+#include "ds1307.h"
 #include "eeprom.h"
 #include "glcd.h"
 #include "keypad.h"
@@ -27,17 +28,17 @@ UART
 
 void displayTimeAndDate()
 {
-    uint8_t hour, minute, second;
-    uint8_t day, date, month, year;
-    char buffer[20];
+	uint8_t hour, minute, second;
+	uint8_t day, date, month, year;
+	char buffer[20];
 
-    ds1307GetTime(&hour, &minute, &second);
-    ds1307GetDate(&day, &date, &month, &year);
+	ds1307GetTime(&hour, &minute, &second);
+	ds1307GetDate(&day, &date, &month, &year);
 
-    sprintf(buffer, "Time: %02d:%02d:%02d", hour, minute, second);
+	sprintf(buffer, "Time: %02d:%02d:%02d", hour, minute, second);
 	virTerminalSendString(buffer);
-    sprintf(buffer, "Date: %02d/%02d/20%02d", date, month, year);
-    virTerminalSendString(buffer);
+	sprintf(buffer, "Date: %02d/%02d/20%02d", date, month, year);
+	virTerminalSendString(buffer);
 }
 
 void testUltrasonic()
@@ -227,9 +228,9 @@ void menu()
 		case '7':
 			removeStudent();
 			break;
-        case '8':
-            eepromReset();
-            break;
+		case '8':
+			eepromReset();
+			break;
 		default:
 			buzzerOn();
 			_delay_ms(200);
