@@ -26,20 +26,20 @@ UART
 {STOPBITS=1}
 */
 
-void displayTimeAndDate()
-{
-	uint8_t hour, minute, second;
-	uint8_t day, date, month, year;
-	char buffer[20];
+// void displayTimeAndDate()
+// {
+// 	uint8_t hour, minute, second;
+// 	uint8_t day, date, month, year;
+// 	char buffer[20];
 
-	ds1307GetTime(&hour, &minute, &second);
-	ds1307GetDate(&day, &date, &month, &year);
+// 	ds1307GetTime(&hour, &minute, &second);
+// 	ds1307GetDate(&day, &date, &month, &year);
 
-	sprintf(buffer, "Time: %02d:%02d:%02d", hour, minute, second);
-	virTerminalSendString(buffer);
-	sprintf(buffer, "Date: %02d/%02d/20%02d", date, month, year);
-	virTerminalSendString(buffer);
-}
+// 	sprintf(buffer, "Time: %02d:%02d:%02d", hour, minute, second);
+// 	virTerminalSendString(buffer);
+// 	sprintf(buffer, "Date: %02d/%02d/20%02d", date, month, year);
+// 	virTerminalSendString(buffer);
+// }
 
 void testUltrasonic()
 {
@@ -197,6 +197,7 @@ void init()
 	virTerminalInit();
 	rfidInit();
 	ds1307Init();
+	timer1Init();
 }
 
 void menu()
