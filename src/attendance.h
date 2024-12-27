@@ -12,6 +12,9 @@
 #include "temperature.h"
 #include "ultrasonic.h"
 #include "virtualTerminal.h"
+#include "Timer.h"
+
+#define TIME_LIMIT_SECOND 15*60 // 15 minutes
 
 void submitStudentCode();
 void studentManagement();

@@ -5,6 +5,15 @@ int presentStudents = 0; // Store the number of present students at any po
 void submitStudentCode()
 {
 	glcdClearAll();
+	if(getElapsedTime() > TIME_LIMIT_SECOND)
+	{
+		glcdString(0, "The absence attendance time is over");
+		buzzerOn();
+		_delay_ms(700);
+		buzzerOff();
+	}
+	else
+	{
 	// glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
 	glcdString(0, "Enter Student Code:");
 	char studentCode[STUDENT_CODE_SIZE] = { 0 };
@@ -14,7 +23,18 @@ void submitStudentCode()
 	while (1)
 	{
 		key = keypadGetkey();
-		if (key == '=') // Assuming '#' is used to submit the code
+		if(getElapsedTime() > TIME_LIMIT_SECOND)
+		{
+			glcdClearAll();
+			index = 0;
+			memset(studentCode, 0, STUDENT_CODE_SIZE);
+			glcdString(0, "The absence attendance time is over");
+			buzzerOn();
+			_delay_ms(700);
+			buzzerOff();
+			break;
+		}
+		else if (key == '=') // Assuming '#' is used to submit the code
 		{
 			studentCode[index] = '\0';
 			if (index == 8)
@@ -49,7 +69,6 @@ void submitStudentCode()
 				buzzerOff();
 				glcdClearLine(2);
 			}
-			memset(studentCode, 0, STUDENT_CODE_SIZE);
 		}
 		else if (key == '*') // Assuming '*' is used to exit the input
 		{
@@ -63,7 +82,7 @@ void submitStudentCode()
 		}
 		else if (isdigit(key))
 		{
-			if (index < STUDENT_CODE_SIZE)
+			if (index < STUDENT_CODE_SIZE-1)
 			{
 				studentCode[index++] = key;
 				glcdString(1, studentCode);
@@ -85,6 +104,7 @@ void submitStudentCode()
 			buzzerOff();
 			glcdClearLine(2);
 		}
+	}
 	}
 }
 
@@ -132,9 +152,8 @@ void studentManagement()
 				_delay_ms(500);
 				buzzerOff();
 				index = 0;
-				glcdClearLine(1);
+				glcdClearLine(2);
 			}
-			memset(studentCode, 0, STUDENT_CODE_SIZE);
 		}
 		else if (key == '*') // Assuming '*' is used to exit the input
 		{
@@ -148,7 +167,7 @@ void studentManagement()
 		}
 		else if (isdigit(key))
 		{
-			if (index > 7)
+			if (index > STUDENT_CODE_SIZE-1)
 			{
 				glcdString(2, "Invalid Code");
 				buzzerOn();
