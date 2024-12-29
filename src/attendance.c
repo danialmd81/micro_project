@@ -4,7 +4,7 @@
 void submitStudentCode()
 {
 	glcdClearAll();
-	if(getElapsedTime() > TIME_LIMIT_SECOND)
+	if (getElapsedTime() > TIME_LIMIT_SECOND)
 	{
 		glcdString(0, "The absence attendance time is over");
 		buzzerOn();
@@ -13,97 +13,97 @@ void submitStudentCode()
 	}
 	else
 	{
-	// glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
-	glcdString(0, "Enter Student Code:");
-	char studentCode[STUDENT_CODE_SIZE] = { 0 };
-	int index = 0;
-	char key;
+		// glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
+		glcdString(0, "Enter Student Code:");
+		char studentCode[STUDENT_CODE_SIZE] = { 0 };
+		int index = 0;
+		char key;
 
-	while (1)
-	{
-		key = keypadGetkey();
-		if(getElapsedTime() > TIME_LIMIT_SECOND)
+		while (1)
 		{
-			glcdClearAll();
-			index = 0;
-			memset(studentCode, 0, STUDENT_CODE_SIZE);
-			glcdString(0, "The absence attendance time is over");
-			buzzerOn();
-			_delay_ms(700);
-			buzzerOff();
-			break;
-		}
-		else if (key == '=') // Assuming '#' is used to submit the code
-		{
-			studentCode[index] = '\0';
-			if (index == 8)
+			key = keypadGetkey();
+			if (getElapsedTime() > TIME_LIMIT_SECOND)
 			{
-				if (searchStudent(studentCode) != -1)
+				glcdClearAll();
+				index = 0;
+				memset(studentCode, 0, STUDENT_CODE_SIZE);
+				glcdString(0, "The absence attendance time is over");
+				buzzerOn();
+				_delay_ms(700);
+				buzzerOff();
+				break;
+			}
+			else if (key == '=') // Assuming '#' is used to submit the code
+			{
+				studentCode[index] = '\0';
+				if (index == 8)
 				{
-					glcdString(2, "Code Already Exists");
-					buzzerOn();
-					_delay_ms(500);
-					buzzerOff();
-					index = 0;
-					memset(studentCode, 0, STUDENT_CODE_SIZE);
-					glcdClearLine(1);
-					glcdClearLine(2);
+					if (searchStudent(studentCode) != -1)
+					{
+						glcdString(2, "Code Already Exists");
+						buzzerOn();
+						_delay_ms(500);
+						buzzerOff();
+						index = 0;
+						memset(studentCode, 0, STUDENT_CODE_SIZE);
+						glcdClearLine(1);
+						glcdClearLine(2);
+					}
+					else
+					{
+						saveStudent(studentCode);
+						glcdString(2, "Code Accepted");
+						_delay_ms(700);
+						index = 0;
+						memset(studentCode, 0, STUDENT_CODE_SIZE);
+						glcdClearLine(1);
+						glcdClearLine(2);
+					}
 				}
 				else
 				{
-					saveStudent(studentCode);
-					glcdString(2, "Code Accepted");
-					_delay_ms(700);
-					index = 0;
-					memset(studentCode, 0, STUDENT_CODE_SIZE);
-					glcdClearLine(1);
+					glcdString(2, "Invalid Code");
+					buzzerOn();
+					_delay_ms(500);
+					buzzerOff();
 					glcdClearLine(2);
 				}
 			}
-			else
+			else if (key == '*') // Assuming '*' is used to exit the input
 			{
-				glcdString(2, "Invalid Code");
+				break;
+			}
+			else if (key == 'c') // Assuming 'c' is used to clear the input
+			{
+				index = 0;
+				memset(studentCode, 0, STUDENT_CODE_SIZE);
+				glcdClearLine(1);
+			}
+			else if (isnum(key))
+			{
+				if (index < STUDENT_CODE_SIZE - 1)
+				{
+					studentCode[index++] = key;
+					glcdString(1, studentCode);
+				}
+				else
+				{
+					glcdString(2, "Invalid Code");
+					buzzerOn();
+					_delay_ms(500);
+					buzzerOff();
+					glcdClearLine(2);
+				}
+			}
+			else if (isnum(key))
+			{
+				glcdString(2, "Invalid Key");
 				buzzerOn();
 				_delay_ms(500);
 				buzzerOff();
 				glcdClearLine(2);
 			}
 		}
-		else if (key == '*') // Assuming '*' is used to exit the input
-		{
-			break;
-		}
-		else if (key == 'c') // Assuming 'c' is used to clear the input
-		{
-			index = 0;
-			memset(studentCode, 0, STUDENT_CODE_SIZE);
-			glcdClearLine(1);
-		}
-		else if (isnum(key))
-		{
-			if (index < STUDENT_CODE_SIZE-1)
-			{
-				studentCode[index++] = key;
-				glcdString(1, studentCode);
-			}
-			else
-			{
-				glcdString(2, "Invalid Code");
-				buzzerOn();
-				_delay_ms(500);
-				buzzerOff();
-				glcdClearLine(2);
-			}
-		}
-		else if (isnum(key))
-		{
-			glcdString(2, "Invalid Key");
-			buzzerOn();
-			_delay_ms(500);
-			buzzerOff();
-			glcdClearLine(2);
-		}
-	}
 	}
 }
 
@@ -166,7 +166,7 @@ void studentManagement()
 		}
 		else if (isnum(key))
 		{
-			if (index > STUDENT_CODE_SIZE-1)
+			if (index > STUDENT_CODE_SIZE - 1)
 			{
 				glcdString(2, "Invalid Code");
 				buzzerOn();
@@ -280,41 +280,41 @@ void retrieveStudentData()
 
 void trafficMonitoring()
 {
-    glcdClearAll();
-    glcdString(2, "Press * to exit");
-    char dist_buff[16];
-    char traffic_buff[23];
-    char key = 0;
+	glcdClearAll();
+	glcdString(2, "Press * to exit");
+	char dist_buff[16];
+	char traffic_buff[23];
+	char key = 0;
 
-    while (1)
-    {
-        sprintf(dist_buff, "Dist: %d cm", Distance);
-        glcdString(0, dist_buff);
-        sprintf(traffic_buff, "traffic: %d  ", Traffic);
-        glcdString(1, traffic_buff);
+	while (1)
+	{
+		sprintf(dist_buff, "Dist: %d cm\0", Distance);
+		glcdString(0, dist_buff);
+		sprintf(traffic_buff, "traffic: %d  \0", Traffic);
+		glcdString(1, traffic_buff);
 
-        key = keypadScan();
-        if (key != 0)
-        {
-            _delay_ms(20); // Debounce delay
-            if (keypadScan() == key)
-            {
-                // Verify key press
-                while (keypadScan() == key)
-                    ;
-                if (key == '*')
-                    return;
-            }
-        }
-        _delay_ms(200); // Add a small delay to prevent continuous reading of the same key press
+		key = keypadScan();
+		if (key != 0)
+		{
+			_delay_ms(20); // Debounce delay
+			if (keypadScan() == key)
+			{
+				// Verify key press
+				while (keypadScan() == key)
+					;
+				if (key == '*')
+					return;
+			}
+		}
+		_delay_ms(200); // Add a small delay to prevent continuous reading of the same key press
 
-        memset(dist_buff, 32, 15);
-        dist_buff[15] = '\0';
-        glcdString(0, dist_buff);
-        memset(traffic_buff, 32, 22);
-        traffic_buff[23] = '\0';
-        glcdString(1, traffic_buff);
-    }
+		memset(dist_buff, 32, 15);
+		dist_buff[15] = '\0';
+		glcdString(0, dist_buff);
+		memset(traffic_buff, 32, 22);
+		traffic_buff[23] = '\0';
+		glcdString(1, traffic_buff);
+	}
 }
 
 void removeStudent()

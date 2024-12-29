@@ -1,10 +1,10 @@
 #ifndef ULTRASONIC_H
 #define ULTRASONIC_H
 
+#include <avr/interrupt.h>
 #include <avr/io.h>
 #include <avr/iom64.h>
 #include <util/delay.h>
-#include <avr/interrupt.h>
 
 // Ultrasonic Pins (D2-D3)
 #define US_TRIG_DDR DDRE
@@ -21,6 +21,7 @@ extern volatile int Traffic; // Store the number of present students at any poin
 extern volatile int Distance; // Store the distance measured by the ultrasonic sensor
 
 void ultrasonicInit();
+uint32_t GetPulseWidth();
 void ultrasonicTrigger();
 
 #endif // ULTRASONIC_H
