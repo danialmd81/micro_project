@@ -47,7 +47,7 @@ void testUltrasonic()
 
 	while (1)
 	{
-		int distance = getDistance();
+		int distance = Distance;
 		char buffer[16];
 		sprintf(buffer, "Dist: %d cm", distance);
 		glcdString(0, buffer);
@@ -255,6 +255,12 @@ int main()
 	// testVirtualTerminal();
 	// testGLCD();
 	// testRFID();
+
+	while (1)
+    {
+        ultrasonicTrigger();
+        _delay_ms(60); // Wait for the echo to be received and processed
+    }
 
 	return 0;
 }

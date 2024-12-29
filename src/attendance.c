@@ -1,6 +1,5 @@
 #include "attendance.h"
-
-int presentStudents = 0; // Store the number of present students at any po
+#include "ultrasonic.h"
 
 void submitStudentCode()
 {
@@ -80,7 +79,7 @@ void submitStudentCode()
 			memset(studentCode, 0, STUDENT_CODE_SIZE);
 			glcdClearLine(1);
 		}
-		else if (isdigit(key))
+		else if (isnum(key))
 		{
 			if (index < STUDENT_CODE_SIZE-1)
 			{
@@ -96,7 +95,7 @@ void submitStudentCode()
 				glcdClearLine(2);
 			}
 		}
-		else if (isdigit(key))
+		else if (isnum(key))
 		{
 			glcdString(2, "Invalid Key");
 			buzzerOn();
@@ -165,7 +164,7 @@ void studentManagement()
 			memset(studentCode, 0, STUDENT_CODE_SIZE);
 			glcdClearLine(1);
 		}
-		else if (isdigit(key))
+		else if (isnum(key))
 		{
 			if (index > STUDENT_CODE_SIZE-1)
 			{
@@ -281,49 +280,41 @@ void retrieveStudentData()
 
 void trafficMonitoring()
 {
-	glcdClearAll();
-	glcdString(2, "Press * to exit");
-	char dist_buff[16];
-	char presents_buff[23];
-	char key = 0;
-	int dist;
+    glcdClearAll();
+    glcdString(2, "Press * to exit");
+    char dist_buff[16];
+    char traffic_buff[23];
+    char key = 0;
 
-	while (1)
-	{
-		dist = getDistance();
+    while (1)
+    {
+        sprintf(dist_buff, "Dist: %d cm", Distance);
+        glcdString(0, dist_buff);
+        sprintf(traffic_buff, "traffic: %d  ", Traffic);
+        glcdString(1, traffic_buff);
 
-		sprintf(dist_buff, "Dist: %d cm", dist);
-		glcdString(0, dist_buff);
-		if (dist < 6)
-		{
-			presentStudents++;
-		}
-		sprintf(presents_buff, "Presents: %d  ", presentStudents);
-		glcdString(1, presents_buff);
+        key = keypadScan();
+        if (key != 0)
+        {
+            _delay_ms(20); // Debounce delay
+            if (keypadScan() == key)
+            {
+                // Verify key press
+                while (keypadScan() == key)
+                    ;
+                if (key == '*')
+                    return;
+            }
+        }
+        _delay_ms(200); // Add a small delay to prevent continuous reading of the same key press
 
-		key = keypadScan();
-		if (key != 0)
-		{
-			_delay_ms(20); // Debounce delay
-			if (keypadScan() == key)
-			{
-
-				// Verify key press
-				while (keypadScan() == key)
-					;
-				if (key == '*')
-					return;
-			}
-		}
-		_delay_ms(200); // Add a small delay to prevent continuous reading of the same key press
-
-		memset(dist_buff, 32, 15);
-		dist_buff[15] = '\0';
-		glcdString(0, dist_buff);
-		memset(presents_buff, 32, 22);
-		presents_buff[23] = '\0';
-		glcdString(1, presents_buff);
-	}
+        memset(dist_buff, 32, 15);
+        dist_buff[15] = '\0';
+        glcdString(0, dist_buff);
+        memset(traffic_buff, 32, 22);
+        traffic_buff[23] = '\0';
+        glcdString(1, traffic_buff);
+    }
 }
 
 void removeStudent()
