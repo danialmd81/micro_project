@@ -48,10 +48,11 @@ void testUltrasonic()
 	{
 		ultrasonicTrigger();
 		int dist = Distance;
+		int t = getElapsedTime();
 		if (dist != US_ERROR && dist != US_NO_OBSTACLE)
 		{
-			char buffer[16];
-			sprintf(buffer, "Dist: %d cm", dist);
+			char buffer[25];
+			sprintf(buffer, "Dist: %d cm     %d s", dist,t);
 			glcdString(0, buffer);
 			_delay_ms(100);
 			glcdClearAll();
@@ -252,10 +253,10 @@ int main()
 	init();
 
 	// Display the main menu and handle user input
-	menu();
+	//menu();
 
 	// Uncomment one of the following lines to test a specific component
-	// testUltrasonic();
+	 testUltrasonic();
 	// testKeypad();
 	// testTemperature();
 	// testVirtualTerminal();
