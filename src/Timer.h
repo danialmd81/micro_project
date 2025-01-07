@@ -1,10 +1,10 @@
 #ifndef TIMER_H
 #define TIMER_H
 
-#include <avr/io.h>
 #include <avr/interrupt.h>
+#include <avr/io.h>
 
-void timer1Init();
+void timerInit();
 uint32_t getElapsedTime();
 
 #endif // TIMER_H

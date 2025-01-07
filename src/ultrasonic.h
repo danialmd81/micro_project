@@ -17,8 +17,8 @@
 #define US_ERROR -1 // Error indicator
 #define US_NO_OBSTACLE -2 // No obstacle indicator
 
-extern volatile int Traffic; // Store the number of present students at any point
-extern volatile int Distance; // Store the distance measured by the ultrasonic sensor
+extern volatile unsigned int Traffic; // Store the number of present students at any point
+extern volatile unsigned int Distance; // Store the distance measured by the ultrasonic sensor
 
 void ultrasonicInit();
 uint32_t GetPulseWidth();

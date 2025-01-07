@@ -15,7 +15,7 @@
 #include "virtualTerminal.h"
 
 // #define TIME_LIMIT_SECOND 15*60 // 15 minutes
-#define TIME_LIMIT_SECOND 5*60 // 5 minutes
+#define TIME_LIMIT_SECOND 1 * 60 // 1 minutes
 
 void submitStudentCode();
 void studentManagement();
