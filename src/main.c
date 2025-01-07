@@ -147,14 +147,8 @@ void testRFID()
 		{
 			if (i > 0) // Only backspace if there are characters
 			{
-				i--; // Move back one position
-				value[i] = '\0'; // Clear last character
-				glcdClearAll(); // Update display
-				for (j = 0; j < i; j++)
-				{
-					// Show remaining chars
-					virTerminalSendChar(value[j]);
-				}
+				i--;
+				virTerminalSendString(" \b");
 			}
 			continue;
 		}
@@ -286,15 +280,12 @@ int main()
 	// Display the main menu and handle user input
 	menu();
 
-	// Uncomment one of the following lines to test a specific component
 	// testUltrasonic();
 	// testKeypad();
 	// testTemperature();
 	// testVirtualTerminal();
 	// testGLCD();
 	// testRFID();
-
-	// while (1)
 
 	return 0;
 }

@@ -13,7 +13,6 @@ void submitStudentCode()
 	}
 	else
 	{
-		// glcdString(0, "Enter Student Code(press c to clear|press * to exit):");
 		glcdString(0, "Enter Student Code:");
 		char studentCode[STUDENT_CODE_SIZE] = { 0 };
 		int index = 0;
