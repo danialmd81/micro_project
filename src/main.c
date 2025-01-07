@@ -25,20 +25,20 @@ UART
 {STOPBITS=1}
 */
 
-// void displayTimeAndDate()
-// {
-// 	uint8_t hour, minute, second;
-// 	uint8_t day, date, month, year;
-// 	char buffer[20];
+void displayTimeAndDate()
+{
+	uint8_t hour, minute, second;
+	uint8_t day, date, month, year;
+	char buffer[20];
 
-// 	ds1307GetTime(&hour, &minute, &second);
-// 	ds1307GetDate(&day, &date, &month, &year);
+	ds1307GetTime(&hour, &minute, &second);
+	ds1307GetDate(&day, &date, &month, &year);
 
-// 	sprintf(buffer, "Time: %02d:%02d:%02d", hour, minute, second);
-// 	virTerminalSendString(buffer);
-// 	sprintf(buffer, "Date: %02d/%02d/20%02d", date, month, year);
-// 	virTerminalSendString(buffer);
-// }
+	sprintf(buffer, "Time: %02d:%02d:%02d", hour, minute, second);
+	virTerminalSendString(buffer);
+	sprintf(buffer, "Date: %02d/%02d/20%02d", date, month, year);
+	virTerminalSendString(buffer);
+}
 
 void testUltrasonic()
 {
@@ -113,69 +113,97 @@ void testGLCD()
 
 void testRFID()
 {
-	unsigned char value[13];
-	unsigned char value1[13] = "123456789012"; // Predefined ID for master
-	unsigned char value2[13] = "987654321098"; // Predefined ID for student
-	int i = 0, j = 0, k = 0;
+#define RFID_LENGTH 8
+#define RFID_BUFFER_SIZE 9 // Including null terminator
+
+	unsigned char value[RFID_BUFFER_SIZE];
+	unsigned char value1[RFID_BUFFER_SIZE] = "12345678"; // Predefined ID for master
+	unsigned char value2[RFID_BUFFER_SIZE] = "87654321"; // Predefined ID for student
+	int i = 0, j = 0, matches = 0;
 
 	glcdClearAll(); // Clear all GLCD display
 
 	while (1)
 	{
+		// Protect against buffer overflow
+		if (i >= RFID_LENGTH)
+		{
+			i = 0;
+			memset(value, 0, sizeof(value));
+			glcdClearAll();
+			glcdString(0, "Buffer Overflow");
+			_delay_ms(1000);
+			glcdClearAll();
+			continue;
+		}
+
 		// Read input from virtual terminal
 		value[i] = virTerminalReceive();
 		virTerminalSendChar(value[i]);
 		_delay_ms(1);
 
-		if (value[i] == '*')
+		// Handle backspace
+		if (value[i] == 8)
 		{
+			if (i > 0) // Only backspace if there are characters
+			{
+				i--; // Move back one position
+				value[i] = '\0'; // Clear last character
+				glcdClearAll(); // Update display
+				for (j = 0; j < i; j++)
+				{
+					// Show remaining chars
+					virTerminalSendChar(value[j]);
+				}
+			}
+			continue;
+		}
+		// Handle star
+		else if (value[i] == '*')
+		{
+			// Reset for next attempt
+			i = 0;
 			memset(value, 0, sizeof(value));
-			i = -1;
+			continue;
 		}
 		i++;
 
-		if (i == 12)
+		// Process complete RFID input
+		if (i == RFID_LENGTH)
 		{
 			value[i] = '\0';
-			for (j = 0; value1[j] != '\0'; j++)
-			{
-				if (value[j] == value1[j])
-					k++;
-			}
-			if (k == 12) // Match with the predefined ID
+			matches = 0;
+
+			if (strcmp(value, value1) == 0)
 			{
 				glcdClearAll();
 				glcdString(0, "Access Granted");
 				glcdString(1, "Master");
 				_delay_ms(1000);
 				glcdClearAll();
+				return;
 			}
-			else
+
+			else if (strcmp(value, value2) == 0)
 			{
-				k = 0;
-				for (j = 0; value2[j] != '\0'; j++)
-				{
-					if (value[j] == value2[j])
-						k++;
-				}
-				if (k == 12)
-				{
-					glcdClearAll();
-					glcdString(0, "Access Granted");
-					glcdString(1, "Student");
-					_delay_ms(1000);
-					glcdClearAll();
-				}
-				else
-				{
-					glcdClearAll();
-					glcdString(0, "Access Denied");
-					_delay_ms(1000);
-					glcdClearAll();
-				}
+				glcdClearAll();
+				glcdString(0, "Access Granted");
+				glcdString(1, "Student");
+				_delay_ms(1000);
+				glcdClearAll();
+				return;
 			}
+
+			// Invalid ID
+			glcdClearAll();
+			glcdString(0, "Access Denied");
+			glcdString(1, "Invalid ID");
+			_delay_ms(1000);
+			glcdClearAll();
+
+			// Reset for next attempt
 			i = 0;
-			k = 0;
+			memset(value, 0, sizeof(value));
 		}
 	}
 }
@@ -191,7 +219,7 @@ void displayMainMenu()
 	glcdString(4, "5.Student Data");
 	glcdString(5, "6.Traffic Monitoring");
 	glcdString(6, "7.Remove Student");
-	glcdString(7, "8.Reset EEPROM");
+	glcdString(7, "8.RFID");
 }
 
 void init()
@@ -237,6 +265,9 @@ void menu()
 			removeStudent();
 			break;
 		case '8':
+			testRFID();
+			break;
+		case '9':
 			eepromReset();
 			break;
 		default:
@@ -256,7 +287,7 @@ int main()
 	menu();
 
 	// Uncomment one of the following lines to test a specific component
-	//  testUltrasonic();
+	// testUltrasonic();
 	// testKeypad();
 	// testTemperature();
 	// testVirtualTerminal();

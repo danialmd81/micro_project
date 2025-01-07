@@ -47,9 +47,9 @@ void saveStudentNumber(uint16_t number)
 // load student number from eeprom
 uint16_t loadStudentNumber()
 {
-    char buffer[10];
-    eepromReadString(STUDENT_NUMBER_ADDRESS, buffer);
-    uint16_t studentNumber = atoi(buffer);
+	char buffer[10];
+	eepromReadString(STUDENT_NUMBER_ADDRESS, buffer);
+	uint16_t studentNumber = atoi(buffer);
 
 	if (studentNumber <= STUDENT_MAX_NUMBER)
 	{
@@ -61,7 +61,6 @@ uint16_t loadStudentNumber()
 	}
 }
 
-// for the first time i don't know to do what
 //  save student from start address and append new ones
 void saveStudent(char studentCode[STUDENT_CODE_SIZE])
 {

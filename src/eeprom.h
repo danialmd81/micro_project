@@ -13,8 +13,7 @@
 #include "common.h"
 
 //
-//#define BUFFER_SIZE 44
-
+// #define BUFFER_SIZE 44
 //
 #define EEPROM_SIZE 0x7ff
 #define STUDENT_NUMBER_ADDRESS 0x0000
