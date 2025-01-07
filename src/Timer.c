@@ -1,31 +1,30 @@
 #include "Timer.h"
+#include "ultrasonic.h"
 
 volatile uint32_t elapsedTime = 0;
 
-ISR(TIMER1_COMPA_vect)
+ISR(TIMER0_COMP_vect)
 {
-    elapsedTime++;
+	elapsedTime++;
 }
 
-void timer1Init()
+void timerInit()
 {
-    // Set Timer1 to CTC mode
-    TCCR1B |= (1 << WGM12);
-    // Set prescaler to 64
-    TCCR1B |= (1 << CS11) | (1 << CS10);
-    // Enable Timer1 compare interrupt
-    TIMSK |= (1 << OCIE1A);
-    // Set compare value for 1ms interrupt
-    OCR1A = (F_CPU / 64 / 1000) - 1;
-    // Enable global interrupts
-    sei();
+	// init timer0
+	TCCR0 |= (1 << WGM01); // CTC Mode
+	TCCR0 |= (1 << CS01) | (1 << CS00); // Prescaler 32
+	TIMSK |= (1 << OCIE0); // Enable Compare Match Interrupt
+
+	OCR0 = 250; // Compare Match value for 1ms
+	// Enable global interrupts
+	sei();
 }
 
 uint32_t getElapsedTime()
 {
-    uint32_t time;
-    cli(); // Disable interrupts
-    time = elapsedTime;
-    sei(); // Enable interrupts
-    return time/1000;
+	uint32_t time;
+	cli(); // Disable interrupts
+	time = elapsedTime;
+	sei(); // Enable interrupts
+	return time / 1000;
 }

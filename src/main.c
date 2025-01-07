@@ -7,7 +7,6 @@
 #include "rfid.h"
 #include "ultrasonic.h"
 #include "virtualTerminal.h"
-#include "ds1307.h"
 
 /*
 atmega64 setting
@@ -47,13 +46,21 @@ void testUltrasonic()
 
 	while (1)
 	{
-		int distance = getDistance();
-		char buffer[16];
-		sprintf(buffer, "Dist: %d cm", distance);
-		glcdString(0, buffer);
-		_delay_ms(1000);
-		glcdClearAll();
+		// ultrasonicTrigger();
+		int dist = Distance;
+		int t = getElapsedTime();
+		if (dist != US_ERROR && dist != US_NO_OBSTACLE)
+		{
+			char buffer[25];
+			sprintf(buffer, "Dist: %d cm     %d s", dist, t);
+			glcdString(0, buffer);
+			_delay_ms(100);
+			glcdClearAll();
+		}
+		_delay_ms(60); // Wait between measurements
 	}
+
+	return 0;
 }
 
 void testKeypad()
@@ -197,7 +204,7 @@ void init()
 	virTerminalInit();
 	rfidInit();
 	ds1307Init();
-	timer1Init();
+	timerInit();
 }
 
 void menu()
@@ -249,12 +256,14 @@ int main()
 	menu();
 
 	// Uncomment one of the following lines to test a specific component
-	// testUltrasonic();
+	//  testUltrasonic();
 	// testKeypad();
 	// testTemperature();
 	// testVirtualTerminal();
 	// testGLCD();
 	// testRFID();
+
+	// while (1)
 
 	return 0;
 }
